@@ -1,12 +1,12 @@
 import React from 'react';
-import { createBrowserRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, Navigate, redirect } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
 import LoginPage from './components/LoginPage/LoginPage';
 import LogoutPage from './components/Logout/Logout';
 import styles from './App.module.css'
-// import './utils/api_calls'
-
+import userService from './utils/userService'
+// import tokenService from './utils/tokenService';
 class App extends React.Component {
   constructor(props){
     super(props)
@@ -25,6 +25,29 @@ class App extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this)
   }
+
+  redirectToLogin(){
+    console.log('checking for user...')
+    const currentUser = userService.getUser()
+    if(!currentUser){
+      return redirect('/login')
+    }
+    return null    
+  }
+
+  setCurrentUser(userData){
+    this.setState({user: userData})
+  }
+
+  handleSignup = () => {
+    this.setState({user: userService.getUser()});
+  }
+
+  handleLogout(){
+    userService.logout();
+    this.setState({ user: null });
+  }
+
 
   getLinks(){
     const links = [
