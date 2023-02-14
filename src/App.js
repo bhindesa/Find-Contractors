@@ -1,12 +1,9 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
-// import TimeZone from './components/TimeZone/TimeZone';
-// import LocationAstronomy from './components/LocationAstronomy/LocationAstronomy';
-// // import WeatherForecast from './components/WeatherForecast/WeatherForecast';
-// import Home from './components/Home/Home';
-// import LoginPage from './components/LoginPage/LoginPage';
-// import LogoutPage from './components/Logout/Logout';
+import Home from './components/Home/Home';
+import LoginPage from './components/LoginPage/LoginPage';
+import LogoutPage from './components/Logout/Logout';
 import styles from './App.module.css'
 // import './utils/api_calls'
 
@@ -68,27 +65,27 @@ class App extends React.Component {
             <Navigate to='/Login' replace/>
           )
         },
-        {
-          path: `/Location Astronomy`,
-          element: (
-            this.state.email 
-            ?
-            // <LocationAstronomy />
-            'Hi'
-            :
-            <Navigate to='/Login' replace/>
-          )
-        },
-        {
-          path: `/Find Time Zone`,
-          element: (
-            this.state.email 
-            ?
-            <TimeZone /> 
-            : 
-            <Navigate to='/Login' replace/>
-          )
-        },
+        // {
+        //   path: `/Location Astronomy`,
+        //   element: (
+        //     this.state.email 
+        //     ?
+        //     <LocationAstronomy />
+        //     :
+        //     <Navigate to='/Login' replace/>
+        //   )
+        // },
+        // {
+        //   path: `/Find Time Zone`,
+        //   element: (
+        //     this.state.email 
+        //     ?
+        //     // <TimeZone /> 
+        //     'ahah'
+        //     : 
+        //     <Navigate to='/Login' replace/>
+        //   )
+        // },
         // {
         //   path: `/Weather Forecast`,
         //   element: <WeatherForecast /> ,

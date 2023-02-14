@@ -1,0 +1,71 @@
+.homeContainer{
+    width: 100vw;
+    height: 70%;
+}
+
+.homeInputFieldForm{
+    width: 100vw;
+    height: 70px;
+    margin-top: 10px;
+    padding: 0;
+}
+
+.homeInputFieldForm > input{
+    width: 75%;
+    height: 50px;
+    margin-right:10px;
+    padding: 0px;
+    text-align: center;
+}
+.homeInputFieldForm > button{
+    width: 20%;
+    height: 50px;
+    padding: 0;
+}
+
+.homeInfoContainer {
+    display: inline-block; 
+    border: 2px solid #ce2c2c;
+    margin-top: 15px; 
+    margin-right: 15px;
+    padding: 25px;
+    width: 80%;
+    border-radius: 10px;
+    background-color: black;
+    color: aliceblue;
+    
+}
+
+.homeWeatherConditions{
+    border: 2px solid #ce2c2c;
+    background-color: white;
+    height: 80%;
+    color: black;
+    top: 0;
+    text-decoration:dotted;
+    display: inline-block;
+    margin: 15px;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.homeWeatherDetails{
+    border: 2px solid #ce2c2c;
+    background-color: white;
+    height: 80%;
+    top: 0;
+    color: black;
+    text-decoration:dotted;
+    display: inline-block;
+    margin: 15px;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.homeWeatherLastUpdated{
+    display: block;
+    text-align: right;
+    margin: 0;
+}
