@@ -1,0 +1,24 @@
+.navbarContainer{
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: #eee;  
+    height: 50px;
+}
+.navbarContainer a{
+    padding: 15px 8px;
+    flex-basis: 300px;
+    text-decoration: none;
+}
+.navbarContainer a:hover{
+    background-color: #ccc;
+    cursor: pointer;
+    color: purple;
+}
+
+.navbarContainer > div{
+    padding: 15px 8px;
+    flex-basis: 300px;
+    text-decoration: none;
+}
