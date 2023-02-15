@@ -4,7 +4,8 @@ const bcrypt = require('bcrypt');
 const SALT_ROUNDS = 6;
 
 const customerSchema = new mongoose.Schema({
-    name: String,
+    firstname: String,
+    lastname: String,
     email: {type: String, required: true, lowercase: true, unique: true},
     password: String
 }, {
@@ -13,7 +14,6 @@ const customerSchema = new mongoose.Schema({
 
 customerSchema.set('toJSON', {
     // remove the password property when serializing doc to JSON
-
     transform : function(doc, ret){
         delete ret.password;
         return ret;
@@ -22,14 +22,14 @@ customerSchema.set('toJSON', {
 
 customerSchema.pre('save', function(next){
     // this will be set to the current document
-    const user = this;
-    if(!user.isModified('password')) 
+    const customer = this;
+    if(!customer.isModified('password')) 
         return next();
-    // password has been changed - salt and hash it    
-    bcrypt.hash(user.password, SALT_ROUNDS, function(err, hash){
+        // password has been changed - salt and hash it    
+        bcrypt.hash(customer.password, SALT_ROUNDS, function(err, hash){
         if(err)
             return next(err);
-        user.password = hash;
+        customer.password = hash;
         next();
     });
 });

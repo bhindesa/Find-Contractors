@@ -11,4 +11,4 @@ const puppySchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Puppy', puppySchema);
+module.exports = mongoose.model('Contractor', puppySchema);

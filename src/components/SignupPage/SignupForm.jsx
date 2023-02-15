@@ -10,16 +10,15 @@ class SignupForm extends Component {
       email: '',
       password: '',
       passwordConf: '',
-      name: '',
       firstname: '',
-      lastname: '',
-      dob: '',
-      address: '',
-      phone: '',
+      // lastname: '',
+      // dob: '',
+      // address: '',
+      // phone: '',
       isContractor: false,
-      companyName: '',
-      companyLicenseNumber : '',
-      companyRegisterYear: ''
+      // companyName: '',
+      // companyLicenseNumber : '',
+      // companyRegisterYear: ''
     };
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
   }
@@ -35,8 +34,14 @@ class SignupForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(this.state)
       await customerService.signupCustomer(this.state);
-      this.props.handleSignup()
+      if(this.state.isContractor){
+        this.props.handleSignup('contractor')
+      }
+      else{
+        this.props.handleSignup('customer')
+      }
       // this.props.handleSignupOrLogin();
     } catch (err) {
       // Invalid user data (probably duplicate email)
@@ -46,7 +51,7 @@ class SignupForm extends Component {
   }
 
   handleCheckboxChange(e){
-    e.preventDefault();
+    // e.preventDefault();
     this.setState(state => {
       return {
         isContractor : !(state.isContractor)
@@ -107,13 +112,13 @@ class SignupForm extends Component {
               <input type="password" className="form-control" placeholder="Confirm Password" value={this.state.passwordConf} name="passwordConf" onChange={this.handleChange} />
             </div>
           </div>
-          {/* <div className="form-group">
+          <div className="form-group">
             <div className="col-sm-12">
               <label htmlFor="firstname">Firstname: </label>
               <input type="text" className="form-control" placeholder="First Name" value={this.state.firstname} name="firstname" onChange={this.handleChange} />
             </div>
           </div>
-          <div className="form-group">
+          {/*<div className="form-group">
             <div className="col-sm-12">
               <label htmlFor="lastname">Lastname: </label>
               <input type="text" className="form-control" placeholder="Last Name" value={this.state.lastname} name="lastname" onChange={this.handleChange} />

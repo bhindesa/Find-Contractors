@@ -3,16 +3,15 @@ import tokenService from './tokenService';
 const BASE_URL = 'http://localhost:3001/api/customers/';
 
 async function signupCustomer(customer) {
-
   try {
-    const res = await fetch(BASE_URL + 'signup', {
+    const response = await fetch(BASE_URL + 'signup', {
                   method: 'POST',
                   headers: new Headers({'Content-Type': 'application/json'}),
                   body: JSON.stringify(customer)
                 });
               
-    const data = await res.json();            
-    const {token} = tokenService.setToken(data);
+    const data = await response.json();            
+    const token = tokenService.setToken(data);
     return token;
   } catch (error) {
     throw new Error(error);
@@ -27,18 +26,25 @@ function logout() {
   tokenService.removeToken();
 }
 
-function login(creds) {
-  return fetch(BASE_URL + 'login', {
-    method: 'POST',
-    headers: new Headers({'Content-Type': 'application/json'}),
-    body: JSON.stringify(creds)
-  })
-  .then(res => {
-    // Valid login if we have a status of 2xx (res.ok)
-    if (res.ok) return res.json();
+async function login(creds) {
+  console.log(creds)
+  try {
+    const response = fetch(BASE_URL + 'login', {
+                      method: 'POST',
+                      headers: new Headers({'Content-Type': 'application/json'}),
+                      body: JSON.stringify(creds)
+                    });
+    
+    const data = await response.json(); 
+    console.log(data)
+           
+    const token = tokenService.setToken(data)
+    return token;
+  } catch (error) {
     throw new Error('Bad Credentials!');
-  })
-  .then(({token}) => tokenService.setToken(token));
+  }
+  
+  
 }
 
 export default {
