@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './LoginPage.css';
-import CustomerLoginPage from './CustomerLoginPage';
-import ContractorLoginPage from './ContractorLoginPage';
 import customerService from '../../utils/customerService';
 import contractorService from '../../utils/contractorService';
-class LoginPage extends Component {
+
+class ContractorLoginPage extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -30,7 +29,7 @@ class LoginPage extends Component {
     //   alert('Invalid Credentials!');
     // }
     try {
-      // await customerService.login(this.state);
+      await customerService.login(this.state);
       //update user variable in state on successful login
       // this.props.setCurrentUser(userService.getUser())
 
@@ -45,17 +44,28 @@ class LoginPage extends Component {
   render() {
     return (
       <div className="LoginPage">
-        <div>
-          Login as Customer: 
-          <CustomerLoginPage />
-        </div>
-        <div>
-          Login as Contractor: 
-          <ContractorLoginPage />
-        </div>  
+        <header className="header-footer">Log In</header>
+        <form className="form-horizontal" onSubmit={this.handleSubmit} >
+          <div className="form-group">
+            <div className="col-sm-12">
+              <input type="email" className="form-control" placeholder="Email" value={this.state.email} name="email" onChange={this.handleChange} />
+            </div>
+          </div>
+          <div className="form-group">
+            <div className="col-sm-12">
+              <input type="password" className="form-control" placeholder="Password" value={this.state.pw} name="pw" onChange={this.handleChange} />
+            </div>
+          </div>
+          <div className="form-group">
+            <div className="col-sm-12 text-center">
+              <button className="btn btn-default">Log In</button>&nbsp;&nbsp;&nbsp;
+              <Link to='/'>Cancel</Link>
+            </div>
+          </div>
+        </form>
       </div>
     );
   }
 }
 
-export default LoginPage;
+export default ContractorLoginPage;

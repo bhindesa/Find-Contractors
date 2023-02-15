@@ -15,8 +15,8 @@ export default function Navbar(props){
             }
             <div>
                 {
-                    props.loggedInUserEmail 
-                    ? `Welcome (${props.loggedInUserEmail}) `
+                    props.loggedInUserFirstname
+                    ? `Welcome (${props.loggedInUserFirstname}) `
                     :''
                 }
             </div>

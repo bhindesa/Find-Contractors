@@ -3,8 +3,8 @@ const router = express.Router();
 
 const customersCtrl = require('../controllers/customer');
 
-router.get('/signup', customersCtrl.createCustomer);
-// router.get('/:searchItem/', puppiesCtrl.searchPuppy);
+router.post('/login', customersCtrl.login);
+router.post('/signup', customersCtrl.createCustomer);
 
 
 

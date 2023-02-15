@@ -7,74 +7,93 @@ import SignupPage from './components/SignupPage/SignupPage';
 import LogoutPage from './components/Logout/Logout';
 import styles from './App.module.css'
 import Banner from './components/Banner/Banner';
-import userService from './utils/customerService'
+import customerService from './utils/customerService'
 // import tokenService from './utils/tokenService';
 class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      // email: '',
-      // pw: '',
-      isUserLogedIn: false,
-      user: userService.getUser(),
+      isCustomerLoggedIn: false,
+      isContractorLoggedIn: false,
+      customerUser: '',
+      contractorUser: ''
     }
-    this.dummyUser = {
-      email: 'sarbTest@example.com',
-      pw: 'testing'
-    }
-    
-    this.setUserInAppState = this.setUserInAppState.bind(this);
+    // this.setUserInAppState = this.setUserInAppState.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
-    this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this)
+    // this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this)
   }
 
-  redirectToLogin(){
-    console.log('checking for user...')
-    const currentUser = userService.getUser()
-    if(!currentUser){
-      return redirect('/login')
-    }
-    return null    
+  componentDidMount(){
+    console.log(this.state)
   }
 
-  setCurrentUser(userData){
-    this.setState({user: userData})
+  componentDidUpdate(){
+    console.log(this.state)
   }
 
-  handleSignup = () => {
-    this.setState({user: userService.getUser()});
+  // redirectToLogin(){
+  //   console.log('checking for user...')
+  //   const currentUser = customerService.getUser()
+  //   if(!currentUser){
+  //     return redirect('/login')
+  //   }
+  //   return null    
+  // }
+
+  // setCurrentUser(userData){
+  //   this.setState({customer: userData})
+  // }
+
+  handleSignup = (whichUserLoggedIn) => {
+    if(whichUserLoggedIn === 'customer'){
+      this.setState({
+          customerUser: customerService.getUser(),
+          isCustomerLoggedIn: !(this.state.isCustomerLoggedIn)
+      });
+      } else {
+        this.setState({
+          // contractorUser: contractorService.getUser(),
+          isContractorLoggedIn: !(this.state.isContractorLoggedIn)
+        });
+      }
+
+    
   }
 
   handleLogout(){
-    userService.logout();
-    this.setState({
-      user: null,
-      isUserLogedIn : false
-     });
-  }
+    if(this.state.isCustomerLoggedIn){
+      customerService.logout();
+      this.setState({
+        customerUser: null,
+        isCustomerLoggedIn : false
+       });
+    } else {
 
+    }
+    
+  }
 
   getLinks(){
     const links = [
       {
         label : 'Home',
-        showAuth: this.state.isUserLogedIn ? true: false
+        showAuth: this.state.isCustomerLoggedIn ? true: false
       },
       {
         label : 'Add Service',
-        showAuth: this.state.isUserLogedIn ? true: false
+        showAuth: this.state.isContractorLoggedIn ? true : false
       },
       {
         label : 'Login',
-        showAuth: this.state.isUserLogedIn ? false: true
+        showAuth: this.state.isCustomerLoggedIn ? false: true
       },
       {
         label : 'Sign Up',
-        showAuth: this.state.isUserLogedIn ? false : true
+        showAuth: this.state.isCustomerLoggedIn ? false : true
       },
       {
         label : 'Logout',
-        showAuth: this.state.isUserLogedIn ? true: false
+        showAuth: this.state.isCustomerLoggedIn ? true: false
       }
     ]
     return links;
@@ -86,7 +105,7 @@ class App extends React.Component {
         {
           path: `/Home`,
           element: (
-            this.state.email 
+            this.state.customerUser
             ? 
             <Home />
             : 
@@ -96,7 +115,7 @@ class App extends React.Component {
         {
           path: `/Add Service`,
           // element: (
-            // this.state.email 
+            // this.state.customer
             // ?
             // <LocationAstronomy />
             // :
@@ -106,11 +125,11 @@ class App extends React.Component {
         {
           path: `/Sign Up`,
           element: (
-          //   this.state.email 
-          //   ?
-            <SignupPage />
-          //   : 
-          //   <Navigate to='/Login' replace/>
+            this.state.customerUser   
+            ?
+            <Navigate to='/Home' replace/>
+            : 
+            <SignupPage handleSignup={this.handleSignup}/>
           )
         },
         {
@@ -120,10 +139,10 @@ class App extends React.Component {
         {
           path: `/Login`,
           element: (
-            // this.user
-            // ? 
-            // <Navigate to='/Home' />
-            // :
+            this.state.customerUser || this.state.contractorUser
+            ? 
+            <Navigate to='/Home' />
+            :
             <>
               <LoginPage 
                 setStateInUserAppJS={this.setUserInAppState}
@@ -136,9 +155,12 @@ class App extends React.Component {
         {
           path: `/Logout`,
           element: (
-            <>
+            this.state.customerUser || this.state.contractorUser
+            ?
             <LogoutPage handleLogout={this.handleLogout}/> 
-            <Navigate to='/Login'  replace/>
+            :
+            <>
+              <Navigate to='/Home'  replace/>
             </>
             
           )
@@ -147,22 +169,6 @@ class App extends React.Component {
     return childernRoutes;
   }
 
-  getDummyUser(){
-    return this.dummyUser;
-  }
-
-  setUserInAppState(data){
-    this.setState({
-      email: data.email,
-      pw: data.pw
-    })
-  }
-
-  setIsUserLoggedIn(){
-    this.setState({
-      isUserLogedIn : true
-    })
-  }
 
 
   getBaseRoute(){
@@ -175,7 +181,7 @@ class App extends React.Component {
                   <Banner />
                   <Navbar 
                     navLinks={this.getLinks()}
-                    loggedInUserEmail={this.state.email}/>
+                    loggedInUserFirstname={ customerService.getUser() ? customerService.getUser().firstname : null }/>
                   <Outlet />
                 </>
             ),
@@ -184,14 +190,6 @@ class App extends React.Component {
       ]
     );
     return baseRouter;
-  }
-
-  componentDidMount(){
-    console.log(this.state)
-  }
-
-  componentDidUpdate(){
-    console.log(this.state)
   }
 
   render(){
