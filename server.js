@@ -6,8 +6,8 @@ const cors = require('cors');
 require('dotenv').config();
 require('./api/config/database');
 
-// const usersRouter = require('./api/routes/user')
-// const puppiesRouter = require('./api/routes/puppy')
+const customersRouter = require('./api/routes/customer')
+const contractorsRouter = require('./api/routes/contractor')
 
 const app = express();
 app.use(cors())
@@ -25,8 +25,8 @@ app.use(express.static(path.join(__dirname, 'build')));
 API route goes here.
 */
 
-// app.use('/api/users', usersRouter);
-// app.use('/api/puppies', puppiesRouter)
+app.use('/api/customers', customersRouter);
+// app.use('/api/contractors', contractorsRouter)
 
 // Put API routes here, before the "catch all" route
 // The following "catch all" route (note the *)is necessary
