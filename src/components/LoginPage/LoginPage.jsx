@@ -10,18 +10,6 @@ class LoginPage extends Component {
       email: '',
       pw: ''
     };
-    this.initialLoader = 1
-  }
-  
-  handleOnLoad(){
-    if(this.initialLoader === 1){
-      let userDataFromAppComp = this.props.userData()
-      this.setState({
-        email: userDataFromAppComp.email,
-        pw: userDataFromAppComp.pw
-      });
-      this.initialLoader++;
-    }
   }
   
   handleChange = (e) => {
@@ -43,7 +31,7 @@ class LoginPage extends Component {
 
   render() {
     return (
-      <div className="LoginPage" onLoad={this.handleOnLoad()}>
+      <div className="LoginPage">
         <header className="header-footer">Log In</header>
         <form className="form-horizontal" onSubmit={this.handleSubmit} >
           <div className="form-group">

@@ -3,24 +3,26 @@ import { createBrowserRouter, RouterProvider, Outlet, Navigate, redirect } from 
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
 import LoginPage from './components/LoginPage/LoginPage';
+import SignupPage from './components/SignupPage/SignupPage';
 import LogoutPage from './components/Logout/Logout';
 import styles from './App.module.css'
-import userService from './utils/userService'
+import Banner from './components/Banner/Banner';
+import userService from './utils/customerService'
 // import tokenService from './utils/tokenService';
 class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      email: '',
-      pw: '',
-      isUserLogedIn: false
+      // email: '',
+      // pw: '',
+      isUserLogedIn: false,
+      user: userService.getUser(),
     }
     this.dummyUser = {
       email: 'sarbTest@example.com',
       pw: 'testing'
     }
     
-    this.getDummyUser = this.getDummyUser.bind(this);
     this.setUserInAppState = this.setUserInAppState.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this)
@@ -45,7 +47,10 @@ class App extends React.Component {
 
   handleLogout(){
     userService.logout();
-    this.setState({ user: null });
+    this.setState({
+      user: null,
+      isUserLogedIn : false
+     });
   }
 
 
@@ -56,15 +61,15 @@ class App extends React.Component {
         showAuth: this.state.isUserLogedIn ? true: false
       },
       {
-        label : 'Location Astronomy',
-        showAuth: this.state.isUserLogedIn ? true: false
-      },
-      {
-        label : 'Find Time Zone',
+        label : 'Add Service',
         showAuth: this.state.isUserLogedIn ? true: false
       },
       {
         label : 'Login',
+        showAuth: this.state.isUserLogedIn ? false: true
+      },
+      {
+        label : 'Sign Up',
         showAuth: this.state.isUserLogedIn ? false : true
       },
       {
@@ -88,41 +93,39 @@ class App extends React.Component {
             <Navigate to='/Login' replace/>
           )
         },
-        // {
-        //   path: `/Location Astronomy`,
-        //   element: (
-        //     this.state.email 
-        //     ?
-        //     <LocationAstronomy />
-        //     :
-        //     <Navigate to='/Login' replace/>
-        //   )
-        // },
-        // {
-        //   path: `/Find Time Zone`,
-        //   element: (
-        //     this.state.email 
-        //     ?
-        //     // <TimeZone /> 
-        //     'ahah'
-        //     : 
-        //     <Navigate to='/Login' replace/>
-        //   )
-        // },
-        // {
-        //   path: `/Weather Forecast`,
-        //   element: <WeatherForecast /> ,
-        // },
+        {
+          path: `/Add Service`,
+          // element: (
+            // this.state.email 
+            // ?
+            // <LocationAstronomy />
+            // :
+            // <Navigate to='/Login' replace/>
+          // )
+        },
+        {
+          path: `/Sign Up`,
+          element: (
+          //   this.state.email 
+          //   ?
+            <SignupPage />
+          //   : 
+          //   <Navigate to='/Login' replace/>
+          )
+        },
+        {
+          path: `/Weather Forecast`,
+          // element: <WeatherForecast /> ,
+        },
         {
           path: `/Login`,
           element: (
-            this.state.email 
-            ? 
-            <Navigate to='/Home' />
-            :
+            // this.user
+            // ? 
+            // <Navigate to='/Home' />
+            // :
             <>
               <LoginPage 
-                userData={this.getDummyUser}
                 setStateInUserAppJS={this.setUserInAppState}
                 setIsUserLoggedIn={this.setIsUserLoggedIn}
               />
@@ -161,14 +164,6 @@ class App extends React.Component {
     })
   }
 
-  handleLogout(){
-    this.setState({
-      email: '',
-      pw: '',
-      isUserLogedIn : false
-    })
-  }
-
 
   getBaseRoute(){
     const baseRouter = createBrowserRouter(
@@ -177,6 +172,7 @@ class App extends React.Component {
           path: '/',
           element: (
                 <>
+                  <Banner />
                   <Navbar 
                     navLinks={this.getLinks()}
                     loggedInUserEmail={this.state.email}/>
