@@ -1,57 +1,56 @@
-// const Contractor = require('../models/contractor');
-// const jwt = require('jsonwebtoken');
+const Contractor = require('../models/contractor');
+const jwt = require('jsonwebtoken');
 
-// const SECRET = process.env.SECRET;
+const SECRET = process.env.SECRET;
 
-
-// /*----- Helper Functions -----*/
-
-// function createJWT(user) {
-//     return jwt.sign(
-//       {user}, // data payload
-//       SECRET,
-//       {expiresIn: '24h'}
-//     );
-// }
+function createJWT(contractor) {
+    return jwt.sign(
+      {contractor}, // data payload
+      SECRET,
+      {expiresIn: '24h'}
+    );
+}
 
 
-// async function signup(req, res) {
-//     const customer = new Customer(req.body);
-//     try {
-//       await customer.save();
-//       // Be sure to first delete data that should not be in the token
-//       const token = createJWT(customer);
-//       res.json({ token });
-//     } catch (err) {
-//       // Probably a duplicate email
-//       res.status(400).json(err);
-//     }
-// }
+async function signup(req, res) {
+  console.log(req.body);
+    const contractor = new Contractor(req.body);
+    console.log(contractor)
+    try {
+      await contractor.save();
+      // Be sure to first delete data that should not be in the token
+      const token = createJWT(contractor);
+      res.json({ token });
+    } catch (err) {
+      // Probably a duplicate email
+      res.status(400).json(err);
+    }
+}
 
 
-// // async function login(req, res){
-// //     try {
-// //         const user = await User.findOne({email : req.body.email});
-// //         console.log('login func ' + user)
+async function login(req, res){
+    try {
+        const contractor = await Contractor.findOne({email : req.body.email});
+        console.log('login func ' + user)
 
-// //         if(!user){
-// //             return res.status(401).json({err : 'User Not found! '});
-// //         }
-// //         user.comparePassword(req.body.pw, (err, isMatch) => {
-// //             if(isMatch){
-// //                 const token = createJWT(user);
-// //                 res.json({token})
-// //             }
-// //             else {
-// //                 return res.status(401).json({err: 'bad password'});
-// //             }
-// //         });
-// //       } catch (err) {
-// //         // Probably a duplicate email
-// //         res.status(400).json(err);
-// //       }
-// // }
-// module.exports = {
-//     signup,
-//     login
-// }
+        if(!contractor){
+            return res.status(401).json({err : 'User Not found! '});
+        }
+        contractor.comparePassword(req.body.pw, (err, isMatch) => {
+            if(isMatch){
+                const token = createJWT(contractor);
+                res.json({token})
+            }
+            else {
+                return res.status(401).json({err: 'bad password'});
+            }
+        });
+      } catch (err) {
+        // Probably a duplicate email
+        res.status(400).json(err);
+      }
+}
+module.exports = {
+    signup,
+    login
+}

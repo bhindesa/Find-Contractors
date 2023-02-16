@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './LoginPage.css';
-import customerService from '../../utils/customerService';
 import contractorService from '../../utils/contractorService';
 
 class ContractorLoginPage extends Component {
@@ -14,26 +13,17 @@ class ContractorLoginPage extends Component {
   }
   
   handleChange = (e) => {
-    // TODO: implement in an elegant way
-    //console.log(e.target.name)
     this.setState({[e.target.name]: e.target.value})
   }
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   this.props.setStateInUserAppJS(this.state);
-    //   this.props.setIsUserLoggedIn();
-    // } catch (err) {
-    //   // Use a modal or toast in your apps instead of alert
-    //   alert('Invalid Credentials!');
-    // }
     try {
-      await customerService.login(this.state);
-      //update user variable in state on successful login
-      // this.props.setCurrentUser(userService.getUser())
-
-      
+      console.log(this.state)
+      const loginContractorSuccessful = await contractorService.login(this.state);
+      if(loginContractorSuccessful){
+        this.props.handleLoginOrSignup('contractor');
+      }
     } catch (err) {
       console.log(err)
       // Invalid user data (probably duplicate email)

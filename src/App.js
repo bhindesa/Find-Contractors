@@ -7,7 +7,8 @@ import SignupPage from './components/SignupPage/SignupPage';
 import LogoutPage from './components/Logout/Logout';
 import styles from './App.module.css'
 import Banner from './components/Banner/Banner';
-import customerService from './utils/customerService'
+import customerService from './utils/customerService';
+import contractorService from './utils/contractorService';
 // import tokenService from './utils/tokenService';
 class App extends React.Component {
   constructor(props){
@@ -18,9 +19,8 @@ class App extends React.Component {
       customerUser: '',
       contractorUser: ''
     }
-    // this.setUserInAppState = this.setUserInAppState.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
-    // this.setIsUserLoggedIn = this.setIsUserLoggedIn.bind(this)
+    this.handleLoginOrSignup = this.handleLoginOrSignup.bind(this);
   }
 
   componentDidMount(){
@@ -40,25 +40,23 @@ class App extends React.Component {
   //   return null    
   // }
 
-  // setCurrentUser(userData){
-  //   this.setState({customer: userData})
-  // }
-
-  handleSignup = (whichUserLoggedIn) => {
-    if(whichUserLoggedIn === 'customer'){
+  handleLoginOrSignup(whichUserLoggedInOrSignedUp){
+    if(whichUserLoggedInOrSignedUp === 'customer'){
       this.setState({
           customerUser: customerService.getUser(),
           isCustomerLoggedIn: !(this.state.isCustomerLoggedIn)
       });
       } else {
         this.setState({
-          // contractorUser: contractorService.getUser(),
+          contractorUser: contractorService.getUser(),
           isContractorLoggedIn: !(this.state.isContractorLoggedIn)
         });
       }
-
-    
   }
+
+  // handleLogin()
+
+  // }
 
   handleLogout(){
     if(this.state.isCustomerLoggedIn){
@@ -77,23 +75,23 @@ class App extends React.Component {
     const links = [
       {
         label : 'Home',
-        showAuth: this.state.isCustomerLoggedIn ? true: false
+        showAuth: this.state.isCustomerLoggedIn || this.state.isContractorLoggedIn ? true: false
       },
       {
         label : 'Add Service',
-        showAuth: this.state.isContractorLoggedIn ? true : false
+        showAuth:  this.state.isContractorLoggedIn ? true : false
       },
       {
         label : 'Login',
-        showAuth: this.state.isCustomerLoggedIn ? false: true
+        showAuth: this.state.isCustomerLoggedIn || this.state.isContractorLoggedIn ? false: true
       },
       {
         label : 'Sign Up',
-        showAuth: this.state.isCustomerLoggedIn ? false : true
+        showAuth: this.state.isCustomerLoggedIn || this.state.isContractorLoggedIn ? false : true
       },
       {
         label : 'Logout',
-        showAuth: this.state.isCustomerLoggedIn ? true: false
+        showAuth: this.state.isCustomerLoggedIn || this.state.isContractorLoggedIn ? true: false
       }
     ]
     return links;
@@ -129,7 +127,7 @@ class App extends React.Component {
             ?
             <Navigate to='/Home' replace/>
             : 
-            <SignupPage handleSignup={this.handleSignup}/>
+            <SignupPage handleLoginOrSignup={this.handleLoginOrSignup}/>
           )
         },
         {
@@ -144,10 +142,7 @@ class App extends React.Component {
             <Navigate to='/Home' />
             :
             <>
-              <LoginPage 
-                setStateInUserAppJS={this.setUserInAppState}
-                setIsUserLoggedIn={this.setIsUserLoggedIn}
-              />
+              <LoginPage handleLoginOrSignup={this.handleLoginOrSignup}/>
             </>
            
           )

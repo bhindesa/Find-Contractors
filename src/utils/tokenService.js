@@ -20,9 +20,14 @@ function getToken() {
   return token;
 }
 
-function getUserFromToken() {
+function getCustomerFromToken() {
   const token = getToken();
   return token ? JSON.parse(atob(token.split('.')[1])).customer : null;
+}
+
+function getContractorFromToken() {
+  const token = getToken();
+  return token ? JSON.parse(atob(token.split('.')[1])).contractor : null;
 }
 
 function removeToken() {
@@ -34,5 +39,6 @@ export default {
   setToken,
   getToken,
   removeToken,
-  getUserFromToken
+  getCustomerFromToken,
+  getContractorFromToken
 };
