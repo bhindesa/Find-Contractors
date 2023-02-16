@@ -22,16 +22,18 @@ async function signup(req, res) {
       const token = createJWT(contractor);
       res.json({ token });
     } catch (err) {
-      // Probably a duplicate email
       res.status(400).json(err);
     }
 }
 
 
 async function login(req, res){
+    console.log(req.body);
+
     try {
         const contractor = await Contractor.findOne({email : req.body.email});
-        console.log('login func ' + user)
+
+        console.log(contractor)
 
         if(!contractor){
             return res.status(401).json({err : 'User Not found! '});

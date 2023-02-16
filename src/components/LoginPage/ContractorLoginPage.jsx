@@ -27,7 +27,7 @@ class ContractorLoginPage extends Component {
     } catch (err) {
       console.log(err)
       // Invalid user data (probably duplicate email)
-      //this.props.updateMessage(err.message);
+      this.props.updateMessage(err.message);
     }
   }
 

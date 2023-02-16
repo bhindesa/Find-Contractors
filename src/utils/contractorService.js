@@ -37,14 +37,15 @@ async function signupContractor(contractor) {
 }
 
 async function login(creds) {
-  console.log('contrac service login func creds' + creds)
+  console.log(JSON.stringify(creds))
+  console.log('contrac service login func creds ')
   try {
     const response = await fetch(BASE_URL + 'login', {
                       method: 'POST',
                       headers: new Headers({'Content-Type': 'application/json'}),
                       body: JSON.stringify(creds)
                     });
-    
+    console.log(response);
     if(response.ok){
       const {token} = await response.json(); 
       // console.log('res data is contrac service login' + token);

@@ -11,10 +11,10 @@ class SignupForm extends Component {
       password: '',
       passwordConf: '',
       firstname: '',
-      // lastname: '',
-      // dob: '',
-      // address: '',
-      // phone: '',
+      lastname: '',
+      dob: '',
+      address: '',
+      phone: '',
       isContractor: false,
       companyName: '',
       companyLicenseNumber : '',
@@ -25,7 +25,7 @@ class SignupForm extends Component {
   
 
   handleChange = (e) => {
-    // this.props.updateMessage('');
+    this.props.updateMessage('');
     this.setState({
       [e.target.name]: e.target.value
     });
@@ -34,7 +34,7 @@ class SignupForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(this.state)
+      // console.log(this.state)
       const {isContractor, ...contractorDataExceptIsContractorKey} = this.state;
       if(this.state.isContractor){
         await contractorService.signupContractor(contractorDataExceptIsContractorKey);
@@ -47,7 +47,7 @@ class SignupForm extends Component {
     } catch (err) {
       // Invalid user data (probably duplicate email)
       console.log(err)
-      // this.props.updateMessage(err.message);
+      this.props.updateMessage(err.message);
     }
   }
 
@@ -68,10 +68,10 @@ class SignupForm extends Component {
         this.state.email 
         && this.state.password === this.state.passwordConf
         && this.state.firstname 
-        // && this.state.lastname
-        // && this.state.dob
-        // && this.state.address
-        // && this.state.phone
+        && this.state.lastname
+        && this.state.dob
+        && this.state.address
+        && this.state.phone
         && this.state.companyName
         && this.state.companyLicenseNumber
         && this.state.companyRegisterYear
@@ -81,10 +81,10 @@ class SignupForm extends Component {
         this.state.email 
         && this.state.password === this.state.passwordConf
         && this.state.firstname 
-        // && this.state.lastname
-        // && this.state.dob
-        // && this.state.address
-        // && this.state.phone
+        && this.state.lastname
+        && this.state.dob
+        && this.state.address
+        && this.state.phone
         );
     }
    
@@ -119,7 +119,7 @@ class SignupForm extends Component {
               <input type="text" className="form-control" placeholder="First Name" value={this.state.firstname} name="firstname" onChange={this.handleChange} />
             </div>
           </div>
-          {/*<div className="form-group">
+          <div className="form-group">
             <div className="col-sm-12">
               <label htmlFor="lastname">Lastname: </label>
               <input type="text" className="form-control" placeholder="Last Name" value={this.state.lastname} name="lastname" onChange={this.handleChange} />
@@ -142,7 +142,7 @@ class SignupForm extends Component {
               <label htmlFor="phone">Phone: </label>
               <input type="text" className="form-control" placeholder="Phone Number" value={this.state.phone} name="phone" onChange={this.handleChange} />
             </div>
-          </div> */}
+          </div>
           <div className="form-group">
             <div className="col-sm-12">
               <label htmlFor="isContractor">Are you a contractor: </label>
@@ -168,7 +168,7 @@ class SignupForm extends Component {
               <div className="form-group">
                 <div className="col-sm-12">
                   <label htmlFor="companyRegisterYear">Company Register Year: </label>
-                  <input type="number" className="form-control" placeholder="Company Registered Year" value={this.state.companyRegisterYear} name="companyRegisterYear" onChange={this.handleChange} />
+                  <input type="text" className="form-control" placeholder="Company Registered Year" value={this.state.companyRegisterYear} name="companyRegisterYear" onChange={this.handleChange} />
                 </div>
               </div>
             </div>

@@ -9,6 +9,7 @@ import styles from './App.module.css'
 import Banner from './components/Banner/Banner';
 import customerService from './utils/customerService';
 import contractorService from './utils/contractorService';
+import AddService from './components/AddService/AddService';
 // import tokenService from './utils/tokenService';
 class App extends React.Component {
   constructor(props){
@@ -54,10 +55,6 @@ class App extends React.Component {
       }
   }
 
-  // handleLogin()
-
-  // }
-
   handleLogout(){
     if(this.state.isCustomerLoggedIn){
       customerService.logout();
@@ -66,7 +63,11 @@ class App extends React.Component {
         isCustomerLoggedIn : false
        });
     } else {
-
+      contractorService.logout();
+      this.setState({
+        contractorUser: null,
+        isContractorLoggedIn : false
+       });
     }
     
   }
@@ -91,7 +92,7 @@ class App extends React.Component {
       },
       {
         label : 'Logout',
-        showAuth: this.state.isCustomerLoggedIn || this.state.isContractorLoggedIn ? true: false
+        showAuth: this.state.isCustomerLoggedIn || this.state.isContractorLoggedIn ? true : false
       }
     ]
     return links;
@@ -103,7 +104,7 @@ class App extends React.Component {
         {
           path: `/Home`,
           element: (
-            this.state.customerUser
+            this.state.customerUser || this.state.contractorUser
             ? 
             <Home />
             : 
@@ -112,27 +113,23 @@ class App extends React.Component {
         },
         {
           path: `/Add Service`,
-          // element: (
-            // this.state.customer
-            // ?
-            // <LocationAstronomy />
-            // :
-            // <Navigate to='/Login' replace/>
-          // )
+          element: (
+            this.state.customerUser || this.state.contractorUser
+            ?
+            <AddService />
+            :
+            <Navigate to='/Login' replace/>
+          )
         },
         {
           path: `/Sign Up`,
           element: (
-            this.state.customerUser   
+            this.state.customerUser || this.state.contractorUser
             ?
             <Navigate to='/Home' replace/>
             : 
             <SignupPage handleLoginOrSignup={this.handleLoginOrSignup}/>
           )
-        },
-        {
-          path: `/Weather Forecast`,
-          // element: <WeatherForecast /> ,
         },
         {
           path: `/Login`,
@@ -152,7 +149,7 @@ class App extends React.Component {
           element: (
             this.state.customerUser || this.state.contractorUser
             ?
-            <LogoutPage handleLogout={this.handleLogout}/> 
+            <LogoutPage  handleLogout = {this.handleLogout} />
             :
             <>
               <Navigate to='/Home'  replace/>

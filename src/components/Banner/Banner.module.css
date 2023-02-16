@@ -1,5 +1,8 @@
 .bannerContainer{
     /* display: flex; */
-    height: 100px;
+    height: 10rem;
     width: 100vw;
+    background-position: absolute;
+    background-size: cover;
+    background-origin: inherit;
 }
