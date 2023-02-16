@@ -8,7 +8,6 @@ require('./api/config/database');
 
 const customersRouter = require('./api/routes/customer')
 const contractorsRouter = require('./api/routes/contractor');
-// const contractorsRouter = require('./api/routes/contractor')
 
 const app = express();
 app.use(cors())

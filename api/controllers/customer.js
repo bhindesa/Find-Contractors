@@ -17,9 +17,10 @@ function createJWT(customer) {
 async function signupCustomer(req, res){
     // console.log(req.body)
     const customer = new Customer(req.body);
+    
 
     try {
-        customer.save(function(){
+        await customer.save(function(){
             // console.log('customer Saved')
             // Be sure to first delete data that should not be in the token
             const token = createJWT(customer);
@@ -27,10 +28,11 @@ async function signupCustomer(req, res){
         
             res.json({token});
         });
-        
     } catch (err) {
       // Probably a duplicate email
-      res.status(400).json(err);
+    //   throw new Error(err)
+        console.log(err)
+        res.status(400).json(err);
     }
 }
 

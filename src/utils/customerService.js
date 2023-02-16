@@ -38,6 +38,7 @@ async function login(creds) {
                       body: JSON.stringify(creds)
                     });
     
+    console.log(response);
     if(response.ok){
       const {token} = await response.json(); 
       console.log('res data is cust service login' + token);
@@ -50,7 +51,7 @@ async function login(creds) {
     }
     
   } catch (error) {
-    throw new Error('Bad Credentials!');
+    throw new Error(error);
   }
 }
 

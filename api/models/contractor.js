@@ -6,13 +6,37 @@ const SALT_ROUNDS = 6;
 const { Schema } = mongoose;
 
 const contractorSchema = new Schema({
-  firstname: String,
-  lastname: String,
-  email: {type: String, required: true, lowercase: true, unique: true},
-  password: String,
-  companyLicenseNumber: String,
-  companyName: String,
-  companyRegisterYear: String
+  email: {
+    type: String, required: true, lowercase: true, unique: true
+  },
+  password: {
+      type: String, required: true
+  },
+  firstname: {
+      type: String, required: true
+  },
+  lastname: {
+      type: String, required: true
+  },
+  dob: {
+      type: Date,
+      required: true
+  },
+  address: {
+      type: String, required: true
+  },
+  phone: {
+      type: Number, required: true
+  },
+  companyLicenseNumber: {
+    type: String, required: true
+  },
+  companyName: {
+    type: String, required: true
+  },
+  companyRegisterYear: {
+    type: String, required: true
+  }
 }, {
 timestamps: true
 });
@@ -38,5 +62,9 @@ contractorSchema.pre('save', function(next){
       next();
   });
 });
+
+contractorSchema.methods.comparePassword = function(tryPassword, cb){
+  bcrypt.compare(tryPassword, this.password, cb);
+}
 
 module.exports = mongoose.model('Contractor', contractorSchema);
