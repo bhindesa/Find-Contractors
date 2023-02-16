@@ -2,49 +2,56 @@ import tokenService from './tokenService';
 
 const BASE_URL = 'http://localhost:3001/api/customers/';
 
-async function signupCustomer(customer) {
-  try {
-    const response = await fetch(BASE_URL + 'signup', {
-                  method: 'POST',
-                  headers: new Headers({'Content-Type': 'application/json'}),
-                  body: JSON.stringify(customer)
-                });
-              
-    const data = await response.json();            
-    const token = tokenService.setToken(data);
-    return token;
-  } catch (error) {
-    throw new Error(error);
-  }
-}
 
 function getUser() {
-  return tokenService.getUserFromToken();
+  return tokenService.getCustomerFromToken();
 }
 
 function logout() {
   tokenService.removeToken();
 }
 
-async function login(creds) {
-  console.log(creds)
+async function signupCustomer(customer) {
   try {
-    const response = fetch(BASE_URL + 'login', {
+    console.log(customer);
+    console.log(JSON.stringify(customer))
+    const response = await fetch(BASE_URL + 'signup', {
+                  method: 'POST',
+                  headers: new Headers({'Content-Type': 'application/json'}),
+                  body: JSON.stringify(customer)
+                });
+              
+    const {token} = await response.json();            
+    tokenService.setToken(token);
+    return token;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+async function login(creds) {
+  console.log('cust service login func creds' + creds)
+  try {
+    const response = await fetch(BASE_URL + 'login', {
                       method: 'POST',
                       headers: new Headers({'Content-Type': 'application/json'}),
                       body: JSON.stringify(creds)
                     });
     
-    const data = await response.json(); 
-    console.log(data)
-           
-    const token = tokenService.setToken(data)
-    return token;
+    if(response.ok){
+      const {token} = await response.json(); 
+      console.log('res data is cust service login' + token);
+      tokenService.setToken(token)
+      return token;
+    }
+    else{
+      console.log('Bad Credentials!');
+      return null;
+    }
+    
   } catch (error) {
     throw new Error('Bad Credentials!');
   }
-  
-  
 }
 
 export default {

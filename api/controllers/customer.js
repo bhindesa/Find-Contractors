@@ -14,31 +14,18 @@ function createJWT(customer) {
 
 }
 
-// function puppyList(req, res){
-//     Puppy.find()
-//     .then((puppies) => {
-//         res.status(200).json(puppies);
-//     })
-// }
-
-
-// function searchPuppy(req, res){
-//     console.log(req.params.searchItem)
-//     res.status(200).json(req.params.searchItem);
-// }
-
-async function createCustomer(req, res){
-    console.log(req.body)
+async function signupCustomer(req, res){
+    // console.log(req.body)
     const customer = new Customer(req.body);
 
     try {
         customer.save(function(){
-            console.log('customer Saved')
+            // console.log('customer Saved')
             // Be sure to first delete data that should not be in the token
             const token = createJWT(customer);
-            console.log(token)
+            // console.log(token)
         
-            res.json(token);
+            res.json({token});
         });
         
     } catch (err) {
@@ -55,21 +42,25 @@ async function login(req, res){
             if(!customer){
                 return res.status(401).json({err : 'User Not found! '});
             }
-           customer.comparePassword(req.body.pw, (err, isMatch) => {
-                if(isMatch){
-                    const token = createJWT(customer);
-                    res.json(token)
-                }
-                else {
-                    return res.status(401).json({err: 'bad password'});
-                }
-            });
+            else{
+                customer.comparePassword(req.body.pw, (err, isMatch) => {
+                    if(isMatch){
+                        const token = createJWT(customer);
+                        console.log('Token in cust login func' + token)
+                        res.status(200).json({token})
+                    }
+                    else {
+                        return res.status(401).json({err: 'bad password'});
+                    }
+                });
+            }
+           
           } catch (err) {
             // Probably a duplicate email
             res.status(400).json(err);
           }
     }
 module.exports = {
-    createCustomer,
+    signupCustomer,
     login
 }

@@ -13,30 +13,21 @@ class CustomerLoginPage extends Component {
   }
   
   handleChange = (e) => {
-    // TODO: implement in an elegant way
-    //console.log(e.target.name)
     this.setState({[e.target.name]: e.target.value})
   }
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   this.props.setStateInUserAppJS(this.state);
-    //   this.props.setIsUserLoggedIn();
-    // } catch (err) {
-    //   // Use a modal or toast in your apps instead of alert
-    //   alert('Invalid Credentials!');
-    // }
     try {
-      await customerService.login(this.state);
-      //update user variable in state on successful login
-      // this.props.setCurrentUser(userService.getUser())
-
-      
+      const loginCustomerSuccessful = await customerService.login(this.state);
+      // console.log('Login Successfull' + loginCustomerSuccessful)
+      if(loginCustomerSuccessful){
+        this.props.handleLoginOrSignup('customer');
+      }
     } catch (err) {
       console.log(err)
       // Invalid user data (probably duplicate email)
-      //this.props.updateMessage(err.message);
+      this.props.updateMessage(err.message);
     }
   }
 

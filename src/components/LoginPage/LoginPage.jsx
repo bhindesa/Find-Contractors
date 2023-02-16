@@ -9,16 +9,22 @@ class LoginPage extends Component {
   constructor(props){
     super(props)
     this.state = {
-      email: '',
-      pw: ''
+      message: ''
     };
+    this.updateMessage = this.updateMessage.bind(this);
   }
-  
-  handleChange = (e) => {
-    // TODO: implement in an elegant way
-    //console.log(e.target.name)
-    this.setState({[e.target.name]: e.target.value})
+
+  updateMessage(messageData){
+    this.setState({
+      message: messageData
+    })
   }
+
+  // handleChange = (e) => {
+  //   // TODO: implement in an elegant way
+  //   //console.log(e.target.name)
+  //   this.setState({[e.target.name]: e.target.value})
+  // }
 
   handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,11 +53,13 @@ class LoginPage extends Component {
       <div className="LoginPage">
         <div>
           Login as Customer: 
-          <CustomerLoginPage />
+          <CustomerLoginPage {...this.props} updateMessage={this.updateMessage}/>
+          <p>{this.state.message}</p>
         </div>
         <div>
           Login as Contractor: 
-          <ContractorLoginPage />
+          <ContractorLoginPage {...this.props} updateMessage={this.updateMessage}/>
+          <p>{this.state.message}</p>
         </div>  
       </div>
     );

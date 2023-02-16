@@ -1,10 +1,10 @@
-
 const express = require('express');
-
 const router = express.Router();
 const contractorsCtrl = require('../controllers/contractor');
 
-// router.post('/signup', usersCtrl.signup);
-// router.post('/login', usersCtrl.login);
+// console.log(contractorsCtrl)
+router.post('/signup', contractorsCtrl.signup);
+router.post('/login', contractorsCtrl.login);
 
-module.exports = router
+
+module.exports = router;

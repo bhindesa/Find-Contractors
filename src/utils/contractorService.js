@@ -1,49 +1,69 @@
 import tokenService from './tokenService';
 
-const BASE_URL = 'http://localhost:3001/api/users/';
-
-function signup(user) {
-  return fetch(BASE_URL + 'signup', {
-    method: 'POST',
-    headers: new Headers({'Content-Type': 'application/json'}),
-    body: JSON.stringify(user)
-  })
-  .then(res => {
-    if (res.ok) return res.json();
-    // Probably a duplicate email
-    throw new Error('Email already taken!');
-  })
-  // Parameter destructuring!
-  .then(({token}) => tokenService.setToken(token));
-  // The above could have been written as
-  //.then((token) => token.token);
-}
+const BASE_URL = 'http://localhost:3001/api/contractors/';
 
 function getUser() {
-  return tokenService.getUserFromToken();
+  return tokenService.getContractorFromToken();
 }
 
 function logout() {
   tokenService.removeToken();
 }
 
-function login(creds) {
-  return fetch(BASE_URL + 'login', {
-    method: 'POST',
-    headers: new Headers({'Content-Type': 'application/json'}),
-    body: JSON.stringify(creds)
-  })
-  .then(res => {
-    // Valid login if we have a status of 2xx (res.ok)
-    if (res.ok) return res.json();
+async function signupContractor(contractor) {
+  try {
+    console.log(contractor);
+    console.log(JSON.stringify(contractor))
+    const response = await fetch(BASE_URL + 'signup', {
+      method: 'POST',
+      headers: new Headers({'Content-Type': 'application/json'}),
+      body: JSON.stringify(contractor)
+    });
+    
+    if(response.ok){
+      const {token} = await response.json(); 
+      // console.log('res data is contrac service login' + token);
+      tokenService.setToken(token)
+      return token;
+    }
+    else{
+      console.log('Bad Credentials!');
+      return null;
+    }
+
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+async function login(creds) {
+  console.log('contrac service login func creds' + creds)
+  try {
+    const response = await fetch(BASE_URL + 'login', {
+                      method: 'POST',
+                      headers: new Headers({'Content-Type': 'application/json'}),
+                      body: JSON.stringify(creds)
+                    });
+    
+    if(response.ok){
+      const {token} = await response.json(); 
+      // console.log('res data is contrac service login' + token);
+      tokenService.setToken(token)
+      return token;
+    }
+    else{
+      console.log('Bad Credentials!');
+      return null;
+    }
+    
+  } catch (error) {
     throw new Error('Bad Credentials!');
-  })
-  .then(({token}) => tokenService.setToken(token));
+  }
 }
 
 export default {
-  signup, 
+  signupContractor, 
   getUser,
   logout,
   login
-};
+}
