@@ -1,0 +1,16 @@
+.ServiceDetailsContainer{
+    border: 2px solid black;
+}
+
+
+
+.imgContainer{
+    display : inline;
+    height : 25px;
+    width: 25px;
+}
+.imgContainer > img{
+    display : inline;
+    height : 25px;
+    width: 25px;
+}

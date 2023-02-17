@@ -72,6 +72,30 @@ async function deleteService(deletingServiceData){
     }
 }
 
+async function getOneService(serviceId){
+    console.log('Getting one services - In (ServicesService)\n');
+    try {
+        const response = await fetch(BASE_URL + `${serviceId}`, {
+            method: 'GET',
+            headers: new Headers({'Content-Type': 'application/json'}),
+        });
+                      
+        console.log(response)
+        if(response.ok){
+            const searchedOneService = await response.json(); 
+            console.log(searchedOneService)
+            return searchedOneService;
+        }
+        else{
+            console.log('Couldn\'t fetch one service');
+            return null;
+        }
+    } 
+    catch (error) {
+       throw new Error('Error while fetching one service');
+    }
+}
+
 async function getAllServices(){
     console.log('Getting all services');
     try {
@@ -84,15 +108,16 @@ async function getAllServices(){
         console.log(response)
         if(response.ok){
             const allServices = await response.json(); 
+            console.log(allServices)
             return allServices;
         }
         else{
-            console.log('Couldn\'t fetch all service');
+            console.log('Couldn\'t fetch all services');
             return null;
         }
     } 
     catch (error) {
-       throw new Error('Error while updating Data');
+       throw new Error('Error while fetching all services');
     }
 }
 
@@ -100,5 +125,6 @@ export default {
   addService,
   updateService,
   deleteService,
+  getOneService,
   getAllServices
 }

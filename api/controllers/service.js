@@ -41,6 +41,29 @@ async function deleteService(req, res){
     }
 }
 
+async function getOneService(req, res){
+    console.log('In get one func contrl \n')
+    console.log(req.params.serviceId)
+
+    try {
+        // const serviceSearched = 
+        Service.find({_id : req.params.serviceId})
+        .populate('contractor_id')
+        .exec(function(err, serviceSearched){
+            if(serviceSearched.length > 0){
+                res.json(serviceSearched);
+            }
+            else{
+                res.json(null).status(401);
+            }
+        });
+        
+    }
+    catch (err) {
+      res.status(400).json(err);
+    }
+}
+
 async function getAllServices(req, res){
     console.log('In get all func contrl')
     try {
@@ -63,5 +86,6 @@ module.exports = {
     addService,
     updateService,
     deleteService,
+    getOneService,
     getAllServices
 }

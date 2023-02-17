@@ -1,6 +1,7 @@
 import { useState } from 'react';
 // import { findWeatherForecast} from '../../utils/api_calls';
 import styles from './Home.module.css'
+import ListAllService from '../ListAllServices/ListAllServices';
 
 export default function Home(props){
     const daysToSearchWeather = 1
@@ -86,10 +87,7 @@ export default function Home(props){
               <button type="submit" >Search Weather</button>
             </form>
             <hr />
-            {
-               currentWeatherData ?  displayWeatherData() : 'Home'
-                
-            }
+           <ListAllService />
         </div>
     )
 }
