@@ -37,8 +37,8 @@ async function signupContractor(contractor) {
 }
 
 async function login(creds) {
-  console.log(JSON.stringify(creds))
-  console.log('contrac service login func creds ')
+  // console.log(JSON.stringify(creds))
+  // console.log('contrac service login func creds ')
   try {
     const response = await fetch(BASE_URL + 'login', {
                       method: 'POST',
@@ -57,7 +57,8 @@ async function login(creds) {
       return null;
     }
     
-  } catch (error) {
+  } 
+  catch (error) {
     throw new Error('Bad Credentials!');
   }
 }
@@ -66,5 +67,5 @@ export default {
   signupContractor, 
   getUser,
   logout,
-  login
+  login,
 }

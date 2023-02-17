@@ -10,7 +10,9 @@ import Banner from './components/Banner/Banner';
 import customerService from './utils/customerService';
 import contractorService from './utils/contractorService';
 import AddService from './components/AddService/AddService';
-// import tokenService from './utils/tokenService';
+// import ListAllService from './components/ListAllServices/ListAllServices';
+import ServiceDetails from './components/ServiceDetails/ServiceDetails';
+import ContractorDetails from './components/ContractorDetails/ContractorDetails';
 class App extends React.Component {
   constructor(props){
     super(props)
@@ -28,9 +30,9 @@ class App extends React.Component {
     console.log(this.state)
   }
 
-  componentDidUpdate(){
-    console.log(this.state)
-  }
+  // componentDidUpdate(){
+  //   console.log(this.state)
+  // }
 
   // redirectToLogin(){
   //   console.log('checking for user...')
@@ -106,7 +108,10 @@ class App extends React.Component {
           element: (
             this.state.customerUser || this.state.contractorUser
             ? 
-            <Home />
+            <>
+              <Home />
+              <Outlet />,
+            </>
             : 
             <Navigate to='/Login' replace/>
           )
@@ -155,6 +160,26 @@ class App extends React.Component {
               <Navigate to='/Home'  replace/>
             </>
             
+          )
+        },
+        {
+          path: `/services/:serviceId`,
+          element: (
+            this.state.customerUser || this.state.contractorUser
+            ?
+            <ServiceDetails />
+            :
+            <Navigate to='/Login' replace/>
+          )
+        },
+        {
+          path: `/contractors/:contractorId`,
+          element: (
+            this.state.customerUser || this.state.contractorUser
+            ?
+            <ContractorDetails />
+            :
+            <Navigate to='/Login' replace/>
           )
         }
     ];
