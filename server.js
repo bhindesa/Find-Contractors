@@ -8,6 +8,7 @@ require('./api/config/database');
 
 const customersRouter = require('./api/routes/customer')
 const contractorsRouter = require('./api/routes/contractor');
+const servicesRouter = require('./api/routes/service')
 
 const app = express();
 app.use(cors())
@@ -27,6 +28,7 @@ API route goes here.
 
 app.use('/api/customers', customersRouter);
 app.use('/api/contractors', contractorsRouter);
+app.use('/api/services', servicesRouter)
 
 // Put API routes here, before the "catch all" route
 // The following "catch all" route (note the *)is necessary

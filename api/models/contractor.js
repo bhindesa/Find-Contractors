@@ -36,7 +36,13 @@ const contractorSchema = new Schema({
   },
   companyRegisterYear: {
     type: String, required: true
-  }
+  },
+  service: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Service'
+    }
+  ]
 }, {
 timestamps: true
 });
