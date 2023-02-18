@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams, Link } from "react-router-dom";
 import contractorService from "../../utils/contractorService";
 import servicesService from "../../utils/servicesService";
+import styles from "./UpdateService.module.css"
 
 export default function UpdateService(){
     const { serviceId} = useParams();
@@ -137,12 +138,13 @@ export default function UpdateService(){
             serviceDescription: serviceDescription,
             labourCharge: labourCharge,
             serviceTime: serviceTime,
-        }
+        };
+        console.log(serviceMappedObject)
         await servicesService.updateService(serviceMappedObject);
         setShouldRedirect(shouldRedirect + 1)
     }
 
-    async function handleUpdate(e){
+    async function handleDelete(e){
         e.preventDefault();
         await servicesService.updateService();
         setShouldRedirect(shouldRedirect + 1)
@@ -205,6 +207,13 @@ export default function UpdateService(){
                     <Link to='/'><button className="btn btn-default" disabled={isFormInvalid()}>Cancel</button></Link>
                     </div>
                 </div>
+                </form>
+                <form className="form-horizontal" onSubmit={handleDelete} >
+                    <div className="form-group">
+                        <div className="col-sm-12 text-center">
+                            <button className={styles.deleteButton} disabled={isFormInvalid()}>Delete Service</button>&nbsp;&nbsp;
+                        </div>
+                    </div>
                 </form>
             </div>
         );

@@ -193,7 +193,7 @@ function ContractorDetails(props){
 
                 }
                 <hr />
-                <h1><i>Servies List</i>:</h1>  
+                <h1><i>Services List</i>:</h1>  
                 {
                     contractorSearched
                     ? 
