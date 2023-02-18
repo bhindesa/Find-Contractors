@@ -63,9 +63,64 @@ async function login(creds) {
   }
 }
 
+
+async function getOneContractor(contractor_id){
+  console.log(contractor_id)
+  console.log('Getting one Contractors - In (contractorService)\n');
+  try {
+      const response = await fetch(BASE_URL + `${contractor_id}`, {
+          method: 'GET',
+          headers: new Headers({'Content-Type': 'application/json'}),
+      });
+                    
+      console.log(response)
+      if(response.ok){
+          const searchedOneContractor = await response.json(); 
+          console.log(searchedOneContractor)
+          return searchedOneContractor;
+      }
+      else{
+          console.log('Couldn\'t fetch one contractor');
+          return null;
+      }
+  } 
+  catch (error) {
+     throw new Error('Error while fetching one contractor');
+  }
+}
+
+async function addReview(contractorReviewData){
+  console.log('Review Data is ADD REVIEW Contractor');
+  console.log(contractorReviewData);
+  try {
+      const response = await fetch(BASE_URL + 'addReview', {
+          method: 'POST',
+          headers: new Headers({'Content-Type': 'application/json'}),
+          body: JSON.stringify(contractorReviewData)
+      });
+                    
+      console.log(response)
+      if(response.ok){
+          const updatedContractorData = await response.json(); 
+          console.log(updatedContractorData)
+          return updatedContractorData;
+      }
+      else{
+          console.log('Couldn\'t add contractor reviews');
+          return null;
+      }
+  } 
+  catch (error) {
+     throw new Error('Error while adding reviews to contractor');
+  }
+
+}
+
 export default {
   signupContractor, 
   getUser,
   logout,
   login,
+  getOneContractor,
+  addReview
 }

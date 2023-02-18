@@ -10,11 +10,9 @@ import Banner from './components/Banner/Banner';
 import customerService from './utils/customerService';
 import contractorService from './utils/contractorService';
 import AddService from './components/AddService/AddService';
-// import ListAllService from './components/ListAllServices/ListAllServices';
 import ServiceDetails from './components/ServiceDetails/ServiceDetails';
 import ContractorDetails from './components/ContractorDetails/ContractorDetails';
-import servicesService from './utils/servicesService';
-
+import UpdateService from './components/UpdateService/UpdateService';
 class App extends React.Component {
   constructor(props){
     super(props)
@@ -27,7 +25,6 @@ class App extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleLoginOrSignup = this.handleLoginOrSignup.bind(this);
     this.checkWhoLoggedIn = this.checkWhoLoggedIn.bind(this);
-    this.getServicesFromAPI = this.getServicesFromAPI.bind(this);
   }
 
   componentDidMount(){
@@ -89,12 +86,6 @@ class App extends React.Component {
         isContractorLoggedIn : false
        });
     }
-  }
-
-  async getServicesFromAPI(serviceId){
-    const serviceDataFromAPI = await servicesService.getOneService(serviceId);
-    console.log(serviceDataFromAPI)
-    return serviceDataFromAPI;
   }
 
   getLinks(){
@@ -205,7 +196,6 @@ class App extends React.Component {
             ?
             <ServiceDetails 
               checkWhoLoggedIn = {this.checkWhoLoggedIn}
-              getServicesFromAPI={this.getServicesFromAPI}
             />
             :
             <Navigate to='/Login' replace/>
@@ -217,6 +207,18 @@ class App extends React.Component {
             this.state.customerUser || this.state.contractorUser
             ?
             <ContractorDetails 
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+            />
+            :
+            <Navigate to='/Login' replace/>
+          )
+        },
+        {
+          path: `/services/:serviceId/update`,
+          element: (
+            this.state.customerUser || this.state.contractorUser
+            ?
+            <UpdateService 
               checkWhoLoggedIn = {this.checkWhoLoggedIn}
             />
             :

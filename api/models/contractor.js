@@ -37,12 +37,20 @@ const contractorSchema = new Schema({
   companyRegisterYear: {
     type: String, required: true
   },
-  service: [
+  services: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Service'
     }
-  ]
+  ],
+  customer_ids:[
+      {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Customer'
+      }
+  ],
+  reviews: [String],
+  stars: [ Number]
 }, {
 timestamps: true
 });

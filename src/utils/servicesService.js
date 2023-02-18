@@ -25,7 +25,7 @@ async function addService(serviceData){
 }
 
 async function updateService(updatedServiceData){
-    console.log(JSON.stringify(updatedServiceData))
+    console.log(updatedServiceData)
     try {
         const response = await fetch(BASE_URL + 'updateService', {
             method: 'POST',
@@ -54,7 +54,7 @@ async function deleteService(deletingServiceData){
         const response = await fetch(BASE_URL + 'deleteService', {
             method: 'POST',
             headers: new Headers({'Content-Type': 'application/json'}),
-            body: JSON.stringify(updatedServiceData)
+            body: JSON.stringify(deletingServiceData)
         });
                       
         console.log(response)
@@ -122,8 +122,8 @@ async function getAllServices(){
 }
 
 async function addReview(reviewData){
-    console.log('Review Data is ADD REVIEW SERVICE');
-    console.log(reviewData);
+    // console.log('Review Data is ADD REVIEW SERVICE');
+    // console.log(reviewData);
 
 
     try {

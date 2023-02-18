@@ -28,6 +28,7 @@ class ListAllService extends Component{
                     this.state.services 
                     ? 
                     this.state.services.map((service, idx) => {
+                        console.log(service)
                         return (
                             <div className={styles.listItems}>
                                 <Link key={idx} to={`/services/${service._id}`}>{service.subCategory} ({service.category})</Link>

@@ -1,23 +1,33 @@
-import { Component } from "react";
-import { Link, redirect } from "react-router-dom";
+import { useEffect, useState } from "react"
+import { useParams, Link } from "react-router-dom";
 import contractorService from "../../utils/contractorService";
 import servicesService from "../../utils/servicesService";
-class AddService extends Component{
 
-    constructor(props){
-        super(props);
-        this.state = {
-            category: '',
-            subCategory: '',
-            serviceDescription: '',
-            labourCharge: '',
-            serviceTime: '',
-            contractor_id: '',
-            shouldRedirect: false
+export default function UpdateService(){
+    const { serviceId} = useParams();
+    const [category, setCategory] = useState();    
+    const [subCategory, setSubCategory] = useState();
+    const [serviceDescription, setServiceDescription] =useState()
+    const [labourCharge, setLabourCharge] = useState();
+    const [serviceTime, setServiceTime] = useState();
+    const [contractor_id, setContractor_id] = useState()
+    const [shouldRedirect, setShouldRedirect] =useState(false);
+
+
+    useEffect(()=>{
+        async function getServiceDataToUpdateState(){
+            const apiData = await servicesService.getOneService(serviceId);
+            console.log(apiData)
+            setCategory(apiData[0].category);
+            setSubCategory(apiData[0].subCategory);
+            setServiceDescription(apiData[0].serviceDescription);
+            setLabourCharge(apiData[0].labourCharge);
+            setServiceTime(apiData[0].serviceTime);
         }
-    }
+        getServiceDataToUpdateState();
+    },[shouldRedirect]);
 
-    getCategoryOptions(){
+    function getCategoryOptions(){
         const categories = [
             'Plumber',
             'Electrician',
@@ -81,52 +91,74 @@ class AddService extends Component{
         };
     }
 
-    findCategory(){
-        return this.getCategoryOptions().categories;
+    function findCategory(){
+        return getCategoryOptions().categories;
     }
 
-    findSubCategory(){
-        return this.getCategoryOptions().subCategories[0][this.state.category];
+    function findSubCategory(){
+        return getCategoryOptions().subCategories[0][category];
     }
 
-    handleChange = (e) => {
-        this.setState({[e.target.name]: e.target.value})
-        this.setState({
-           contractor_id: contractorService.getUser()._id
-        })
+    function handleChange(e){
+        setContractor_id(contractorService.getUser()._id)
+        if(e.target.name === 'category'){
+            setCategory(e.target.value)
+        }
+        if(e.target.name === 'subCategory'){
+            setSubCategory(e.target.value)
+        }
+        if(e.target.name === 'serviceDescription'){
+            setServiceDescription(e.target.value)
+        }
+        if(e.target.name === 'labourCharge'){
+            setLabourCharge(e.target.value)
+        }
+        if(e.target.name === 'serviceTime'){
+            setServiceTime(e.target.value)
+        }
     }
 
-    isFormInvalid(){
+    function isFormInvalid(){
         return !(
-            this.state.category 
-            && this.state.subCategory
-            && this.state.serviceDescription
-            && this.state.labourCharge
-            && this.state.serviceTime
+            category 
+            && subCategory
+            && serviceDescription
+            && labourCharge
+            && serviceTime
             );
     }
 
-    handleSubmit = async(e) =>{
+    async function handleUpdate(e){
         e.preventDefault();
-        console.log(this.state)
-        await servicesService.addService(this.state);
-        // this.setState({ shouldRedirect: true });
-        redirect('/Home')
+        const serviceMappedObject = {
+            serviceId: serviceId,
+            category: category,
+            subCategory: subCategory,
+            serviceDescription: serviceDescription,
+            labourCharge: labourCharge,
+            serviceTime: serviceTime,
+        }
+        await servicesService.updateService(serviceMappedObject);
+        setShouldRedirect(shouldRedirect + 1)
     }
 
+    async function handleUpdate(e){
+        e.preventDefault();
+        await servicesService.updateService();
+        setShouldRedirect(shouldRedirect + 1)
+    }
 
-    render(){
-        return (
+    return (
             <div>
-                <header className="header-footer">Sign Up</header>
-                <form className="form-horizontal" onSubmit={this.handleSubmit} >
+                <h1>Update Service</h1>
+                <form className="form-horizontal" onSubmit={handleUpdate} >
                 <div className="form-group">
                     <div className="col-sm-12">
                         <label htmlFor="category">Category: </label>
-                        <select name="category" value={this.state.category} onChange={this.handleChange}>
+                        <select name="category" value={category} onChange={handleChange}>
                                 <option value="">Select an option</option>
                             {   
-                                this.findCategory().map((category, idx) => {
+                                findCategory().map((category, idx) => {
                                     return <option key={idx} value={`${category}`}>{category}</option>
                                 })
                             }
@@ -135,12 +167,12 @@ class AddService extends Component{
                 </div>
                 <div className="form-group">
                     <div className="col-sm-12">
-                        <label htmlFor="category">Sub Category: </label>
-                        <select name="subCategory" value={this.state.subCategory} onChange={this.handleChange}>
+                        <label htmlFor="subCategory">Sub Category: </label>
+                        <select name="subCategory" value={subCategory} onChange={handleChange}>
                                 <option value="">Select an option</option>
                             {
-                                this.state.category 
-                                ? this.findSubCategory().map((subCategory, idx) => {
+                                category 
+                                ? findSubCategory().map((subCategory, idx) => {
                                     return <option key={idx} value={`${subCategory}`}>{subCategory}</option>
                                 })
                                 : ''
@@ -152,32 +184,29 @@ class AddService extends Component{
                 <div className="form-group">
                     <div className="col-sm-12">
                     <label htmlFor="serviceDescription">Service Description: </label>
-                    <input type="text" className="form-control" placeholder="Enter Service Description" value={this.state.serviceDescription} name="serviceDescription" onChange={this.handleChange} />
+                    <input type="text" className="form-control" placeholder="Enter Service Description" value={serviceDescription} name="serviceDescription" onChange={handleChange} />
                     </div>
                 </div>
                 <div className="form-group">
                     <div className="col-sm-12">
                     <label htmlFor="labourCharge">Labour Charge ($/hr): </label>
-                    <input type="text" className="form-control" placeholder="Enter Labour Charge" value={this.state.labourCharge} name="labourCharge" onChange={this.handleChange} />
+                    <input type="text" className="form-control" placeholder="Enter Labour Charge" value={labourCharge} name="labourCharge" onChange={handleChange} />
                     </div>
                 </div>
                 <div className="form-group">
                     <div className="col-sm-12">
                     <label htmlFor="serviceTime">Service Time (Hours): </label>
-                    <input type="text" className="form-control" placeholder="Enter Service Time(Hours)" value={this.state.serviceTime} name="serviceTime" onChange={this.handleChange} />
+                    <input type="text" className="form-control" placeholder="Enter Service Time(Hours)" value={serviceTime} name="serviceTime" onChange={handleChange} />
                     </div>
                 </div>
                  <div className="form-group">
                     <div className="col-sm-12 text-center">
-                    <button className="btn btn-default" disabled={this.isFormInvalid()}>Add Service</button>&nbsp;&nbsp;
-                    <Link to='/'>Cancel</Link>
+                    <button className="btn btn-default" disabled={isFormInvalid()}>Update Service</button>&nbsp;&nbsp;
+                    <Link to='/'><button className="btn btn-default" disabled={isFormInvalid()}>Cancel</button></Link>
                     </div>
                 </div>
                 </form>
             </div>
         );
-    }
+
 }
-
-
-export default AddService;
