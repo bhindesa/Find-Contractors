@@ -8,18 +8,9 @@
     border:  2px solid black;
 }
 .reviewList{
-    display:flex;
-    margin: 10px;
-    padding: 20px;
-    border: 2px solid rgb(163, 102, 102);
+    display:inline-block;
+    border: 2px solid red;
 }
-.reviewList > p{
-    display:flex;
-    margin: 10px;
-    padding: 20px;
-    border: 2px solid rgb(166, 142, 142);
-}
-
 
 .imgContainer{
     display : inline;

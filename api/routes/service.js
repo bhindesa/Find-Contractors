@@ -7,5 +7,7 @@ router.get('/:serviceId', servicesCtrl.getOneService);
 router.post('/addService', servicesCtrl.addService);
 router.post('/updateService', servicesCtrl.updateService);
 router.delete('/deleteService', servicesCtrl.deleteService);
+router.post('/addReview', servicesCtrl.updateService);
+
 
 module.exports = router;

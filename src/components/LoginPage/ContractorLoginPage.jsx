@@ -36,7 +36,6 @@ class ContractorLoginPage extends Component {
   render() {
     return (
       <div className="LoginPage">
-        <header className="header-footer">Log In</header>
         <form className="form-horizontal" onSubmit={this.handleSubmit} >
           <div className="form-group">
             <div className="col-sm-12">
@@ -50,7 +49,7 @@ class ContractorLoginPage extends Component {
           </div>
           <div className="form-group">
             <div className="col-sm-12 text-center">
-              <button className="btn btn-default">Log In</button>&nbsp;&nbsp;&nbsp;
+              <button className="btn btn-default">Contractor Log In</button>&nbsp;&nbsp;&nbsp;
               <Link to='/'>Cancel</Link>
             </div>
           </div>

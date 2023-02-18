@@ -1,8 +1,7 @@
 .bannerContainer{
-    /* display: flex; */
-    height: 10rem;
-    width: 100vw;
+    background-image: url('/public/images/findContractorLogo.png');
+    background-size: cover; 
+    /* height: 20vh;
+    width: 100vw; */
     background-position: absolute;
-    background-size: cover;
-    background-origin: inherit;
 }

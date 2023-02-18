@@ -14,16 +14,29 @@ async function addService(req, res){
 }
 
 async function updateService(req, res){
-    // console.log(req.body.category)
-    const updatingService = Service.findOne({_id : req.body.contractor_id});
+    console.log('Backend Update FUnc')
+    console.log(req.body)
+    // const updatingService = await Service.findById(req.body.service_id);
     try {
-
-        for (let key in req.body) {
-            updatingService[key] = req.body[key];
-            
-        }
-        await updatingService.save()
-        res.json(updatingService);
+        Service.findById(req.body.service_id)
+        .populate(['customer_ids', 'contractor_id'])
+        .exec(async function(err, serviceSearched){
+            if(serviceSearched){
+                for (let key in req.body) {
+                    if(key === 'customer_ids' || key === 'reviews' || key === 'stars'){
+                        serviceSearched[key].push(req.body[key])
+                    }
+                    else{
+                        serviceSearched[key] = req.body[key];
+                    }
+                }
+                await serviceSearched.save();
+                res.json(serviceSearched);
+            }
+            else{
+                res.json(null).status(401);
+            }
+        });
     }
     catch (err) {
       res.status(400).json(err);
@@ -50,7 +63,7 @@ async function getOneService(req, res){
         Service.find({_id : req.params.serviceId})
         .populate('contractor_id')
         .exec(function(err, serviceSearched){
-            if(serviceSearched.length > 0){
+            if(serviceSearched){
                 res.json(serviceSearched);
             }
             else{
@@ -67,7 +80,7 @@ async function getOneService(req, res){
 async function getAllServices(req, res){
     console.log('In get all func contrl')
     try {
-        const allServices = await Service.find({});
+        const allServices = await Service.find({}).populate('contractor_id');
         if(allServices.length > 0){
             res.json(allServices);
         }

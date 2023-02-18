@@ -52,12 +52,11 @@ class LoginPage extends Component {
     return (
       <div className="LoginPage">
         <div>
-          Login as Customer: 
           <CustomerLoginPage {...this.props} updateMessage={this.updateMessage}/>
           <p>{this.state.message}</p>
         </div>
+        <hr />
         <div>
-          Login as Contractor: 
           <ContractorLoginPage {...this.props} updateMessage={this.updateMessage}/>
           <p>{this.state.message}</p>
         </div>  

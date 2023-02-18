@@ -121,10 +121,39 @@ async function getAllServices(){
     }
 }
 
+async function addReview(reviewData){
+    console.log('Review Data is ADD REVIEW SERVICE');
+    console.log(reviewData);
+
+
+    try {
+        const response = await fetch(BASE_URL + 'addReview', {
+            method: 'POST',
+            headers: new Headers({'Content-Type': 'application/json'}),
+            body: JSON.stringify(reviewData)
+        });
+                      
+        console.log(response)
+        if(response.ok){
+            const updatedServiceData = await response.json(); 
+            console.log(updatedServiceData)
+            return updatedServiceData;
+        }
+        else{
+            console.log('Couldn\'t add reviews');
+            return null;
+        }
+    } 
+    catch (error) {
+       throw new Error('Error while adding reviews to service');
+    }
+}
+
 export default {
   addService,
   updateService,
   deleteService,
   getOneService,
-  getAllServices
+  getAllServices,
+  addReview
 }
