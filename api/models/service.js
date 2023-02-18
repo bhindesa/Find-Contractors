@@ -19,7 +19,16 @@ const serviceSchema = new mongoose.Schema({
     contractor_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Contractor'
-    }
+    },
+    customer_ids:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Customer'
+        }
+    ],
+    reviews: [String],
+    stars: [ Number]
+
 }, {
   timestamps: true
 })

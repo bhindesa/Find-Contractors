@@ -13,6 +13,8 @@ import AddService from './components/AddService/AddService';
 // import ListAllService from './components/ListAllServices/ListAllServices';
 import ServiceDetails from './components/ServiceDetails/ServiceDetails';
 import ContractorDetails from './components/ContractorDetails/ContractorDetails';
+import servicesService from './utils/servicesService';
+
 class App extends React.Component {
   constructor(props){
     super(props)
@@ -24,6 +26,8 @@ class App extends React.Component {
     }
     this.handleLogout = this.handleLogout.bind(this);
     this.handleLoginOrSignup = this.handleLoginOrSignup.bind(this);
+    this.checkWhoLoggedIn = this.checkWhoLoggedIn.bind(this);
+    this.getServicesFromAPI = this.getServicesFromAPI.bind(this);
   }
 
   componentDidMount(){
@@ -42,6 +46,20 @@ class App extends React.Component {
   //   }
   //   return null    
   // }
+  checkWhoLoggedIn(){
+    if(this.state.isContractorLoggedIn){
+      return {
+        typeOfUser : 'contractor',
+        contractorData : this.state.contractorUser
+      }
+    }
+    else if(this.state.isCustomerLoggedIn){
+      return {
+        typeOfUser : 'customer',
+        customerData : this.state.customerUser
+      }
+    }
+  }
 
   handleLoginOrSignup(whichUserLoggedInOrSignedUp){
     if(whichUserLoggedInOrSignedUp === 'customer'){
@@ -71,7 +89,12 @@ class App extends React.Component {
         isContractorLoggedIn : false
        });
     }
-    
+  }
+
+  async getServicesFromAPI(serviceId){
+    const serviceDataFromAPI = await servicesService.getOneService(serviceId);
+    console.log(serviceDataFromAPI)
+    return serviceDataFromAPI;
   }
 
   getLinks(){
@@ -109,7 +132,9 @@ class App extends React.Component {
             this.state.customerUser || this.state.contractorUser
             ? 
             <>
-              <Home />
+              <Home 
+                checkWhoLoggedIn = {this.checkWhoLoggedIn}
+              />
               <Outlet />,
             </>
             : 
@@ -121,7 +146,9 @@ class App extends React.Component {
           element: (
             this.state.customerUser || this.state.contractorUser
             ?
-            <AddService />
+            <AddService 
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+            />
             :
             <Navigate to='/Login' replace/>
           )
@@ -133,7 +160,10 @@ class App extends React.Component {
             ?
             <Navigate to='/Home' replace/>
             : 
-            <SignupPage handleLoginOrSignup={this.handleLoginOrSignup}/>
+            <SignupPage 
+              handleLoginOrSignup={this.handleLoginOrSignup}
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+            />
           )
         },
         {
@@ -144,7 +174,10 @@ class App extends React.Component {
             <Navigate to='/Home' />
             :
             <>
-              <LoginPage handleLoginOrSignup={this.handleLoginOrSignup}/>
+              <LoginPage 
+                handleLoginOrSignup={this.handleLoginOrSignup}
+                checkWhoLoggedIn = {this.checkWhoLoggedIn}
+              />
             </>
            
           )
@@ -154,7 +187,10 @@ class App extends React.Component {
           element: (
             this.state.customerUser || this.state.contractorUser
             ?
-            <LogoutPage  handleLogout = {this.handleLogout} />
+            <LogoutPage 
+              handleLogout = {this.handleLogout} 
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+            />
             :
             <>
               <Navigate to='/Home'  replace/>
@@ -167,7 +203,10 @@ class App extends React.Component {
           element: (
             this.state.customerUser || this.state.contractorUser
             ?
-            <ServiceDetails />
+            <ServiceDetails 
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+              getServicesFromAPI={this.getServicesFromAPI}
+            />
             :
             <Navigate to='/Login' replace/>
           )
@@ -177,7 +216,9 @@ class App extends React.Component {
           element: (
             this.state.customerUser || this.state.contractorUser
             ?
-            <ContractorDetails />
+            <ContractorDetails 
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+            />
             :
             <Navigate to='/Login' replace/>
           )
@@ -195,10 +236,10 @@ class App extends React.Component {
           path: '/',
           element: (
                 <>
-                  <Banner />
                   <Navbar 
                     navLinks={this.getLinks()}
-                    loggedInUserFirstname={ customerService.getUser() ? customerService.getUser().firstname : null }/>
+                    loggedInCustomerFirstname={ customerService.getUser() ? customerService.getUser().firstname : null }
+                    loggedInContractorFirstname={ contractorService.getUser() ? contractorService.getUser().firstname : null }/>
                   <Outlet />
                 </>
             ),

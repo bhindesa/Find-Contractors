@@ -1,35 +1,52 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import contractorService from "../../utils/contractorService";
+import { Link, useNavigate } from "react-router-dom";
+// import contractorService from "../../utils/contractorService";
 import servicesService from "../../utils/servicesService";
 import styles from './ServiceDetails.module.css';
-import { withRoutes } from 'react-router-dom';
+// import { withRoutes } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 function ServiceDetails(props){
     const starIconLink = <img src="https://img.icons8.com/3d-fluency/94/null/star.png" />
     const { serviceId } = useParams();
-    const [category, setCategory] = useState();
-    const [subCategory, setSubCategory] = useState();
-    const [serviceDescription, setServiceDescription] = useState();
-    const [labourCharge, setLabourCharge] = useState();
-    const [serviceTime, setServiceTime] = useState();
-    const [contractor_id, setContractor_id] = useState();
-    const [serviceSearched, setServiceSearched] = useState('Intial');
+    const currentLoggedInUser = props.checkWhoLoggedIn();
+    const [serviceSearched, setServiceSearched] = useState();
     const [contractor, setContractor] = useState();
+    const [customer, setCustomer] = useState();
     const [review, setReview] = useState();
     const [stars, setStars] = useState();
     const [starIcon, setStarIcon] = useState(starIconLink);
 
     useEffect(() => {
-        async function fetchData(){
+        const fetchData = async() => {
+            if(currentLoggedInUser.typeOfUser === 'customer'){
+                setCustomer(currentLoggedInUser.customerData);
+            } 
+            else if(currentLoggedInUser.typeOfUser === 'contractor'){
+                setContractor(currentLoggedInUser.customerData)
+                console.log('YOU ARE NOT ALLOWED TO ADD REVIEWS TO SERVICES')
+            }
             console.log(serviceId);
-            const serviceDataFromAPI = await  servicesService.getOneService(serviceId);
-            console.log(serviceDataFromAPI)
-            setServiceSearched(serviceDataFromAPI);
+            const data = await  props.getServicesFromAPI(serviceId)
+            console.log(data[0])
+            setServiceSearched(data[0]);
         }
         fetchData();  
-    },[] )
+    },[serviceId] );
+
+    async function handleSubmit(e){
+        e.preventDefault();
+        console.log(serviceId);
+        const reviewData = {
+            service_id : serviceId,
+            customer_ids : customer._id,
+            reviews: review,
+            stars: stars
+        }
+        // const newlyAddReview = 
+        await servicesService.addReview(reviewData);
+        // navigate('/Home')
+    }
 
     function isFormInvalid(){
         return !(
@@ -56,6 +73,38 @@ function ServiceDetails(props){
         return stars;
     }
 
+    function generateReviewList(){
+        const listOfReview = [];
+        if(serviceSearched){
+            for (let index = 0; index < serviceSearched.reviews.length; index++) {
+                const reviewsListObject = {
+                    firstname : serviceSearched.customer_ids[index].firstname,
+                    lasttname : serviceSearched.customer_ids[index].lastname,
+                    review: serviceSearched.reviews[index],
+                    stars: serviceSearched.stars[index]
+                };
+                listOfReview.push((<div key={index} className={styles.reviewList}>
+                    <p> {reviewsListObject.firstname} - {reviewsListObject.lasttname} </p>
+                    <p>
+                        {   
+                            stars 
+                            ?
+                            getStarsBasedOnRating(stars).map((star, idx) => {
+                                return (
+                                    <div className={styles.imgContainer} key={idx}> {star} </div>
+                                )
+                            })
+                            : 'Stars not available'
+                        }
+                    </p>
+                    <p> {reviewsListObject.review} </p>
+                </div>));
+                
+            }
+        }
+        return listOfReview;
+    }
+
     function getRatingOptions(){
         const ratingOptions = [
             {
@@ -78,21 +127,14 @@ function ServiceDetails(props){
         return ratingOptions;
     }
 
-    async function handleSubmit(e){
-        e.preventDefault();
-        console.log(serviceId)
-        // await contractorService.addReview(this.state);
-    }
-
-
     return (
-            <div>
+            <div className={styles.serviceDetailsContainer}>
                 <header className="header-footer"><h1><i>Service Details</i>:</h1> </header>
                 {
                     serviceSearched
                     ?     
-                    <div className={styles.serviceDetailsContainer}>
-                        <p>{serviceSearched.subCategory} {serviceSearched.category}{serviceId}</p>
+                    <div >
+                        <p>{serviceSearched.subCategory} - {serviceSearched.category}</p>
                         <p>{serviceSearched.companyName}</p>
                         <p>
                             {   
@@ -108,11 +150,17 @@ function ServiceDetails(props){
                         <p>{serviceSearched.companyRegisterYear}</p>
                         <p>{serviceSearched.serviceDescription}</p>
                     </div>
-                    : 'Data not fetched'
+                    : 
+                    <div className={styles.serviceDetailsContainer}>
+                        Data not fetched
+                    </div>
+
 
                 }
-            
-                <h1><i>Reviews</i>:</h1>           
+
+                <hr />
+                <h1><i>Reviews</i>:</h1>   
+
                 <form className={styles.serviceReviewsContainer} onSubmit={handleSubmit} >
                     <div className="form-group">
                         <div className="col-sm-12">
@@ -129,7 +177,7 @@ function ServiceDetails(props){
                                     getRatingOptions() 
                                     ?
                                     getRatingOptions().map((numberOfStar, idx) => {
-                                        console.log(numberOfStar[`${idx + 1}`])
+                                        // console.log(numberOfStar[`${idx + 1}`])
                                         return (
                                             <option key={idx} value={`${idx + 1}`}> {`${idx + 1}`} </option>)
                                     })
@@ -137,7 +185,6 @@ function ServiceDetails(props){
                                 }
                             </select>
                             <div>
-                                <p>
                                     {   
                                         stars 
                                         ?
@@ -147,7 +194,6 @@ function ServiceDetails(props){
                                         })
                                         : 'Stars not available'
                                     }
-                                </p>
                             </div>
                         </div>
 
@@ -155,10 +201,26 @@ function ServiceDetails(props){
                     <div className="form-group">
                         <div className="col-sm-12 text-center">
                         <button className="btn btn-default" disabled={isFormInvalid()}>Add Review</button>&nbsp;&nbsp;
-                        <Link to='/'>Cancel</Link>
+                        <Link to='/Home'>Cancel</Link>
                         </div>
                     </div>
                 </form>
+
+                <hr />
+                
+                {
+                    serviceSearched
+                    ? 
+                    <div className={styles.reviewListContainer}>
+                        {generateReviewList()}
+                    </div>
+                    : 
+                    <div className={styles.reviewListContainer}>
+                       "No Reviews Available"
+                    </div>
+                        
+                    
+                }
             </div>
     );
 }

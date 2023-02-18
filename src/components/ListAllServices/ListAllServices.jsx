@@ -1,6 +1,7 @@
 import { Component } from "react";
 import servicesService from "../../utils/servicesService";
 import { Link } from "react-router-dom";
+import styles from './ListAllServices.module.css'
 
 class ListAllService extends Component{
 
@@ -21,15 +22,18 @@ class ListAllService extends Component{
 
     render(){
         return (
-            <div >
-                List of Services
+            <div className={styles.listContainer}>
+                <h1>List of Services</h1>
                 {
                     this.state.services 
                     ? 
                     this.state.services.map((service, idx) => {
-                        return (<div>
-                            <Link key={idx} to={`/services/${service._id}`}>{service.category}</Link>
-                        </div>)
+                        return (
+                            <div className={styles.listItems}>
+                                <Link key={idx} to={`/services/${service._id}`}>{service.subCategory} ({service.category})</Link>
+                                <Link key={idx + 10 } to={`/contractors/${service.contractor_id._id}`}>{service.contractor_id.companyName}</Link>
+                            </div>
+                        )
                     })
                     : 'Services not available'
                 }
