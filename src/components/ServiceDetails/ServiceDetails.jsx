@@ -11,11 +11,12 @@ function ServiceDetails(props){
     const { serviceId } = useParams();
     const currentLoggedInUser = props.checkWhoLoggedIn();
     const [serviceSearched, setServiceSearched] = useState();
-    const [contractor, setContractor] = useState();
+    // const [contractor, setContractor] = useState();
     const [customer, setCustomer] = useState();
     const [review, setReview] = useState();
     const [stars, setStars] = useState();
     const [starIcon, setStarIcon] = useState(starIconLink);
+    const [submitClicked, setSubmitClicked] = useState(0);
 
     useEffect(() => {
         const fetchData = async() => {
@@ -23,16 +24,16 @@ function ServiceDetails(props){
                 setCustomer(currentLoggedInUser.customerData);
             } 
             else if(currentLoggedInUser.typeOfUser === 'contractor'){
-                setContractor(currentLoggedInUser.customerData)
+                // setContractor(currentLoggedInUser.customerData)
                 console.log('YOU ARE NOT ALLOWED TO ADD REVIEWS TO SERVICES')
             }
             console.log(serviceId);
-            const data = await  props.getServicesFromAPI(serviceId)
+            const data = await servicesService.getOneService(serviceId)
             console.log(data[0])
             setServiceSearched(data[0]);
         }
         fetchData();  
-    },[serviceId] );
+    },[submitClicked]);
 
     async function handleSubmit(e){
         e.preventDefault();
@@ -43,16 +44,16 @@ function ServiceDetails(props){
             reviews: review,
             stars: stars
         }
-        // const newlyAddReview = 
         await servicesService.addReview(reviewData);
-        // navigate('/Home')
+        setSubmitClicked(submitClicked + 1);
     }
 
     function isFormInvalid(){
         return !(
             review
             && stars
-            );
+            && customer
+        );
     }
 
     function handleChange(e) {
@@ -158,6 +159,17 @@ function ServiceDetails(props){
 
                 }
 
+                <div className={styles.serviceUpdateContainer} onSubmit={handleSubmit} >
+                    <Link to={`/services/${serviceId}/update`} replace><button>Update Service</button></Link>
+                </div>
+                {/* <form className={styles.serviceReviewsContainer} onSubmit={handleSubmit} >
+                    <div className="form-group">
+                            <div className="col-sm-12 text-center">
+                                <button className="btn btn-default" disabled={isFormInvalid()}>Add Review</button>&nbsp;&nbsp;
+                            </div>
+                    </div>
+                </form> */}
+
                 <hr />
                 <h1><i>Reviews</i>:</h1>   
 
@@ -165,7 +177,7 @@ function ServiceDetails(props){
                     <div className="form-group">
                         <div className="col-sm-12">
                         <label htmlFor="serviceTime">Review : </label>
-                        <input type="text" className="form-control" placeholder="Enter Service Time(Hours)" value={review} name="review" onChange={handleChange} />
+                        <input type="text" className="form-control" placeholder="Enter review for this service" value={review} name="review" onChange={handleChange} />
                         </div>
                     </div>
                     <div className="form-group">

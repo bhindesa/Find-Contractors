@@ -1,11 +1,15 @@
 const Service = require('../models/service');
+const Contractor = require('../models/contractor');
 
 async function addService(req, res){
     console.log(req.body.category)
     const newlyAddedService = new Service(req.body);
     try {
         newlyAddedService.contractor_id = req.body.contractor_id;
-        await newlyAddedService.save()
+        await newlyAddedService.save();
+        const connectingContractor = await Contractor.findById(req.body.contractor_id);
+        connectingContractor.services.push(newlyAddedService);
+        await connectingContractor.save();
         res.json(newlyAddedService);
     }
     catch (err) {
@@ -14,9 +18,8 @@ async function addService(req, res){
 }
 
 async function updateService(req, res){
-    console.log('Backend Update FUnc')
-    console.log(req.body)
-    // const updatingService = await Service.findById(req.body.service_id);
+    // console.log('Backend Update FUnc')
+    // console.log(req.body)
     try {
         Service.findById(req.body.service_id)
         .populate(['customer_ids', 'contractor_id'])
@@ -55,13 +58,13 @@ async function deleteService(req, res){
 }
 
 async function getOneService(req, res){
-    console.log('In get one func contrl \n')
-    console.log(req.params.serviceId)
+    // console.log('In get one func contrl \n')
+    // console.log(req.params.serviceId)
 
     try {
         // const serviceSearched = 
         Service.find({_id : req.params.serviceId})
-        .populate('contractor_id')
+        .populate(['contractor_id','customer_ids'])
         .exec(function(err, serviceSearched){
             if(serviceSearched){
                 res.json(serviceSearched);
@@ -78,7 +81,7 @@ async function getOneService(req, res){
 }
 
 async function getAllServices(req, res){
-    console.log('In get all func contrl')
+    // console.log('In get all func contrl')
     try {
         const allServices = await Service.find({}).populate('contractor_id');
         if(allServices.length > 0){
