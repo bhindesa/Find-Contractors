@@ -1,4 +1,4 @@
-import { Component, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import contractorService from "../../utils/contractorService";
 import servicesService from "../../utils/servicesService";
@@ -7,137 +7,154 @@ import { withRoutes } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 function ServiceDetails(props){
+    const starIconLink = <img src="https://img.icons8.com/3d-fluency/94/null/star.png" />
     const { serviceId } = useParams();
-    console.log(serviceId)
+    const [category, setCategory] = useState();
+    const [subCategory, setSubCategory] = useState();
+    const [serviceDescription, setServiceDescription] = useState();
+    const [labourCharge, setLabourCharge] = useState();
+    const [serviceTime, setServiceTime] = useState();
+    const [contractor_id, setContractor_id] = useState();
+    const [serviceSearched, setServiceSearched] = useState('Intial');
+    const [contractor, setContractor] = useState();
+    const [review, setReview] = useState();
+    const [stars, setStars] = useState();
+    const [starIcon, setStarIcon] = useState(starIconLink);
 
-    // constructor(props){
-    //     super(props);
-    //     this.state = {
-    //         category: 'Plumber',
-    //         subCategory: 'Abc',
-    //         serviceDescription: 'Hello',
-    //         labourCharge: '',
-    //         serviceTime: '',
-    //         contractor_id: '',
-    //         contractor: '',
-    //         review: '',
-    //         stars: 3,
-    //         starIcon: ''
-    //     }
-    // }
+    useEffect(() => {
+        async function fetchData(){
+            console.log(serviceId);
+            const serviceDataFromAPI = await  servicesService.getOneService(serviceId);
+            console.log(serviceDataFromAPI)
+            setServiceSearched(serviceDataFromAPI);
+        }
+        fetchData();  
+    },[] )
 
-    // const { match } = this.props;
+    function isFormInvalid(){
+        return !(
+            review
+            && stars
+            );
+    }
 
+    function handleChange(e) {
+        if(e.target.name === 'review'){
+            setReview(e.target.value)
+        }
+        if(e.target.name === 'stars'){
+            setStars(e.target.value)
+        }
+        
+    }
 
-    // function handleChange(e) {
-    //     this.setState({[e.target.name]: e.target.value})
-    // }
+    function getStarsBasedOnRating(numberOfStar){
+        let stars = [];
+        for (let index = 0; index < numberOfStar ; index++) {
+            stars.push(starIcon);
+        }
+        return stars;
+    }
 
-    // async useEffect(){
-    //     const { params } = this.props.route;
-    //     const { serviceId } = params;
-    //     // const { match } = this.props;
-    //     // const serviceId = route.params.serviceId;
-    //     console.log(serviceId);
-    //     const starIcon = <img src="https://img.icons8.com/3d-fluency/94/null/star.png" />;
-    //     this.setState({
-    //         starIcon: starIcon
-    //     });
-    //     // const serviceSearched = await servicesService.getOneService('63ef243c1fd38398931fe140')
-    // } 
+    function getRatingOptions(){
+        const ratingOptions = [
+            {
+                "1" : getStarsBasedOnRating(1)
+            },
+            {
+                "2" : getStarsBasedOnRating(2)
+            },
+            {
+                "3" : getStarsBasedOnRating(3)
+            },
+            {
+                "4" : getStarsBasedOnRating(4)
+            },
+            {
+                "5" : getStarsBasedOnRating(5)
+            }
+        ]
 
-    // isFormInvalid(){
-    //     return !(
-    //         this.state.review
-    //         && this.state.stars
-    //         );
-    // }
+        return ratingOptions;
+    }
 
-    // getStarsBasedOnRating(numberOfStar){
-    //     const starIcon = this.state.starIcon;
-    //     let stars = [];
-    //     for (let index = 0; index < numberOfStar ; index++) {
-    //         stars.push(starIcon);
-    //     }
-    //     return stars;
-    // }
-
-    // getRatingOptions(){
-    //     const ratingOptions = [
-    //         {
-    //             "1" : this.getStarsBasedOnRating(1)
-    //         },
-    //         {
-    //             "2" : this.getStarsBasedOnRating(2)
-    //         },
-    //         {
-    //             "3" : this.getStarsBasedOnRating(3)
-    //         },
-    //         {
-    //             "4" : this.getStarsBasedOnRating(4)
-    //         },
-    //         {
-    //             "5" : this.getStarsBasedOnRating(5)
-    //         }
-    //     ]
-
-    //     return ratingOptions;
-    // }
-
-    // handleSubmit = async(e) =>{
-    //     e.preventDefault();
-    //     console.log(this.state)
-    //     // await contractorService.addReview(this.state);
-    // }
+    async function handleSubmit(e){
+        e.preventDefault();
+        console.log(serviceId)
+        // await contractorService.addReview(this.state);
+    }
 
 
     return (
             <div>
                 <header className="header-footer"><h1><i>Service Details</i>:</h1> </header>
-                <div className={styles.serviceDetailsContainer}>
-                    <p>{this.state.subCategory} ({this.state.category}) {serviceId}</p>
-                    {/* <p>{this.state.contractor.companyName}</p> */}
-                    <p>
-                        {   
-                            this.state.stars 
-                            ?
-                            this.getStarsBasedOnRating(this.state.stars).map((star, idx) => {
-                                return (
-                                <div className={styles.imgContainer} key={idx}> {star} </div>)
-                            })
-                            : 'Stars not available'
-                        }
-                    </p>
-                    {/* <p>{this.state.contractor.companyRegisterYear}</p> */}
-                    <p>{this.state.serviceDescription}</p>
-                </div>
+                {
+                    serviceSearched
+                    ?     
+                    <div className={styles.serviceDetailsContainer}>
+                        <p>{serviceSearched.subCategory} {serviceSearched.category}{serviceId}</p>
+                        <p>{serviceSearched.companyName}</p>
+                        <p>
+                            {   
+                                stars 
+                                ?
+                                getStarsBasedOnRating(stars).map((star, idx) => {
+                                    return (
+                                    <div className={styles.imgContainer} key={idx}> {star} </div>)
+                                })
+                                : 'Stars not available'
+                            }
+                        </p>
+                        <p>{serviceSearched.companyRegisterYear}</p>
+                        <p>{serviceSearched.serviceDescription}</p>
+                    </div>
+                    : 'Data not fetched'
+
+                }
+            
                 <h1><i>Reviews</i>:</h1>           
-                <form className={styles.serviceReviewsContainer} onSubmit={this.handleSubmit} >
+                <form className={styles.serviceReviewsContainer} onSubmit={handleSubmit} >
                     <div className="form-group">
                         <div className="col-sm-12">
-                        <label htmlFor="serviceTime">Service Time (Hours): </label>
-                        <input type="text" className="form-control" placeholder="Enter Service Time(Hours)" value={this.state.review} name="review" onChange={this.handleChange} />
+                        <label htmlFor="serviceTime">Review : </label>
+                        <input type="text" className="form-control" placeholder="Enter Service Time(Hours)" value={review} name="review" onChange={handleChange} />
                         </div>
                     </div>
                     <div className="form-group">
                         <div className="col-sm-12">
                             <label htmlFor="category">Rating for this service: </label>
-                            <select name="stars" value={this.state.stars} onChange={this.handleChange}>
+                            <select name="stars" value={stars} onChange={handleChange}>
                                     <option value="">Select an option</option>
                                 {   
-                                    this.getRatingOptions() 
+                                    getRatingOptions() 
                                     ?
-                                    this.getRatingOptions().map((numberOfStar, idx) => {
-                                        return <option key={idx} value={`${Object.keys(numberOfStar)[idx + 1]}`}>{numberOfStar[idx + 1]}</option>
+                                    getRatingOptions().map((numberOfStar, idx) => {
+                                        console.log(numberOfStar[`${idx + 1}`])
+                                        return (
+                                            <option key={idx} value={`${idx + 1}`}> {`${idx + 1}`} </option>)
                                     })
                                     : 'Stars not available'
                                 }
                             </select>
+                            <div>
+                                <p>
+                                    {   
+                                        stars 
+                                        ?
+                                        getStarsBasedOnRating(stars).map((star, idx) => {
+                                            return (
+                                            <div className={styles.imgContainer} key={idx}> {star} </div>)
+                                        })
+                                        : 'Stars not available'
+                                    }
+                                </p>
+                            </div>
                         </div>
+
                     </div>
                     <div className="form-group">
                         <div className="col-sm-12 text-center">
-                        <button className="btn btn-default" disabled={this.isFormInvalid()}>Add Review</button>&nbsp;&nbsp;
+                        <button className="btn btn-default" disabled={isFormInvalid()}>Add Review</button>&nbsp;&nbsp;
                         <Link to='/'>Cancel</Link>
                         </div>
                     </div>

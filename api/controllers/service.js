@@ -50,7 +50,7 @@ async function getOneService(req, res){
         Service.find({_id : req.params.serviceId})
         .populate('contractor_id')
         .exec(function(err, serviceSearched){
-            if(serviceSearched.length > 0){
+            if(serviceSearched){
                 res.json(serviceSearched);
             }
             else{
