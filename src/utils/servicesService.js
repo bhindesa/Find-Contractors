@@ -25,10 +25,10 @@ async function addService(serviceData){
 }
 
 async function updateService(updatedServiceData){
-    console.log(updatedServiceData)
+    console.log(JSON.stringify(updatedServiceData))
     try {
         const response = await fetch(BASE_URL + 'updateService', {
-            method: 'POST',
+            method: 'PUT',
             headers: new Headers({'Content-Type': 'application/json'}),
             body: JSON.stringify(updatedServiceData)
         });
@@ -52,18 +52,18 @@ async function deleteService(deletingServiceData){
     console.log(JSON.stringify(deletingServiceData))
     try {
         const response = await fetch(BASE_URL + 'deleteService', {
-            method: 'POST',
+            method: 'DELETE',
             headers: new Headers({'Content-Type': 'application/json'}),
             body: JSON.stringify(deletingServiceData)
         });
                       
         console.log(response)
         if(response.ok){
-            const updatedService = await response.json(); 
-            return updatedService;
+            const deletedService = await response.json(); 
+            return deletedService;
         }
         else{
-            console.log('Data not updated');
+            console.log('Data not deleted');
             return null;
         }
     } 
@@ -83,8 +83,8 @@ async function getOneService(serviceId){
         console.log(response)
         if(response.ok){
             const searchedOneService = await response.json(); 
-            console.log(searchedOneService)
-            return searchedOneService;
+            console.log(searchedOneService[0])
+            return searchedOneService[0];
         }
         else{
             console.log('Couldn\'t fetch one service');
@@ -122,10 +122,6 @@ async function getAllServices(){
 }
 
 async function addReview(reviewData){
-    // console.log('Review Data is ADD REVIEW SERVICE');
-    // console.log(reviewData);
-
-
     try {
         const response = await fetch(BASE_URL + 'addReview', {
             method: 'POST',
@@ -135,9 +131,9 @@ async function addReview(reviewData){
                       
         console.log(response)
         if(response.ok){
-            const updatedServiceData = await response.json(); 
-            console.log(updatedServiceData)
-            return updatedServiceData;
+            const updatedServiceReviewData = await response.json(); 
+            console.log(updatedServiceReviewData)
+            return updatedServiceReviewData;
         }
         else{
             console.log('Couldn\'t add reviews');

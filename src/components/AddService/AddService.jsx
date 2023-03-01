@@ -1,23 +1,21 @@
-import { Component } from "react";
-import { Link, redirect } from "react-router-dom";
+import { Component, useState } from "react";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import contractorService from "../../utils/contractorService";
 import servicesService from "../../utils/servicesService";
-class AddService extends Component{
+function AddService() {
 
-    constructor(props){
-        super(props);
-        this.state = {
-            category: '',
-            subCategory: '',
-            serviceDescription: '',
-            labourCharge: '',
-            serviceTime: '',
-            contractor_id: '',
-            shouldRedirect: false
-        }
-    }
+    const [category, setCategory] = useState('');
+    const [subCategory, setSubCategory] = useState('');
+    const [serviceDescription, setServiceDescription] = useState('');
+    const [labourCharge, setLabourCharge] = useState('');
+    const [serviceTime, setServiceTime] = useState('');
+    const [contractor_id, setContractor_id] = useState('');
 
-    getCategoryOptions(){
+    //UseNavigate() to help redirect
+    const navigate = useNavigate(); 
+
+
+    function getCategoryOptions(){
         const categories = [
             'Plumber',
             'Electrician',
@@ -26,54 +24,52 @@ class AddService extends Component{
             'Painting',
         ]
 
-        const subCategories = [
-            {
-                'Plumber' : [
-                        'Installation of plumbing systems',
-                        'Repair of plumbing systems',
-                        'Water heater installation and repair',
-                        'Gas line installation and repair',
-                        'Sewer and drain cleaning',
-                        'Fixture installation',
-                        'Backflow prevention'
-                ],
-                'Electrician': [
-                        'Electrical installation',
-                        'Electrical repair',
-                        'Electrical upgrades',
-                        'Electrical maintenance',
-                        'Lighting installation',
-                        'Generator installation',
-                        'Electrical safety inspections'
-                ],
-                'Duct Cleaning' : [
-                        'Air duct cleaning',
-                        'Dryer vent cleaning',
-                        'HVAC system inspection',
-                        'Mold and mildew removal',
-                        'Ductwork repair and replacement',
-                        'Air purification and filtration'
-                ],
-                'Drywall': [
-                        'Drywall installation',
-                        'Drywall finishing',
-                        'Texture application',
-                        'Drywall repair',
-                        'Soundproofing',
-                        'Fireproofing',
-                        'Backflow prevention'
-                ],
-                'Painting' : [
-                        'Painting',
-                        'Surface preparation',
-                        'Staining',
-                        'Wallpaper installation and removal',
-                        'Texture application',
-                        'Exterior painting',
-                        'Color consultation'
-                ]
-            }
-        ]
+        const subCategories = {
+            'Plumber' : [
+                    'Installation of plumbing systems',
+                    'Repair of plumbing systems',
+                    'Water heater installation and repair',
+                    'Gas line installation and repair',
+                    'Sewer and drain cleaning',
+                    'Fixture installation',
+                    'Backflow prevention'
+            ],
+            'Electrician': [
+                    'Electrical installation',
+                    'Electrical repair',
+                    'Electrical upgrades',
+                    'Electrical maintenance',
+                    'Lighting installation',
+                    'Generator installation',
+                    'Electrical safety inspections'
+            ],
+            'Duct Cleaning' : [
+                    'Air duct cleaning',
+                    'Dryer vent cleaning',
+                    'HVAC system inspection',
+                    'Mold and mildew removal',
+                    'Ductwork repair and replacement',
+                    'Air purification and filtration'
+            ],
+            'Drywall': [
+                    'Drywall installation',
+                    'Drywall finishing',
+                    'Texture application',
+                    'Drywall repair',
+                    'Soundproofing',
+                    'Fireproofing',
+                    'Backflow prevention'
+            ],
+            'Painting' : [
+                    'Painting',
+                    'Surface preparation',
+                    'Staining',
+                    'Wallpaper installation and removal',
+                    'Texture application',
+                    'Exterior painting',
+                    'Color consultation'
+            ]
+        };
 
         return {
             categories: categories,
@@ -81,102 +77,120 @@ class AddService extends Component{
         };
     }
 
-    findCategory(){
-        return this.getCategoryOptions().categories;
+    function findCategory(){
+        return getCategoryOptions().categories;
     }
 
-    findSubCategory(){
-        return this.getCategoryOptions().subCategories[0][this.state.category];
+    function findSubCategory(){
+        return getCategoryOptions().subCategories[category];
     }
 
-    handleChange = (e) => {
-        this.setState({[e.target.name]: e.target.value})
-        this.setState({
-           contractor_id: contractorService.getUser()._id
-        })
+    function handleChange(e){
+
+        setContractor_id(contractorService.getUser()._id)
+        if(e.target.name === 'category'){
+            setCategory(e.target.value)
+        }
+        if(e.target.name === 'subCategory'){
+            setSubCategory(e.target.value)
+        }
+        if(e.target.name === 'serviceDescription'){
+            setServiceDescription(e.target.value)
+        }
+        if(e.target.name === 'labourCharge'){
+            setLabourCharge(e.target.value)
+        }
+        if(e.target.name === 'serviceTime'){
+            setServiceTime(e.target.value)
+        }
     }
 
-    isFormInvalid(){
+    function isFormInvalid(){
         return !(
-            this.state.category 
-            && this.state.subCategory
-            && this.state.serviceDescription
-            && this.state.labourCharge
-            && this.state.serviceTime
+            category 
+            && subCategory
+            && serviceDescription
+            && labourCharge
+            && serviceTime
             );
     }
 
-    handleSubmit = async(e) =>{
+    async function handleSubmit(e){
         e.preventDefault();
-        console.log(this.state)
-        await servicesService.addService(this.state);
-        // this.setState({ shouldRedirect: true });
-        redirect('/Home')
+        const newService = {
+            category: category,
+            subCategory: subCategory,
+            serviceDescription: serviceDescription,
+            labourCharge: labourCharge,
+            serviceTime: serviceTime,
+            contractor_id: contractor_id
+        };
+        const newAddedService = await servicesService.addService(newService);
+        if(newAddedService){
+            navigate('/Home');
+        }
     }
 
-
-    render(){
-        return (
-            <div>
-                <header className="header-footer">Sign Up</header>
-                <form className="form-horizontal" onSubmit={this.handleSubmit} >
-                <div className="form-group">
-                    <div className="col-sm-12">
-                        <label htmlFor="category">Category: </label>
-                        <select name="category" value={this.state.category} onChange={this.handleChange}>
-                                <option value="">Select an option</option>
-                            {   
-                                this.findCategory().map((category, idx) => {
-                                    return <option key={idx} value={`${category}`}>{category}</option>
-                                })
-                            }
-                        </select>
-                    </div>
+    return (
+        <div>
+            <h1>Add Service</h1>
+            <form className="form-horizontal" onSubmit={handleSubmit} >
+            <div className="form-group">
+                <div className="col-sm-12">
+                    <label htmlFor="category">Category: </label>
+                    <select name="category" value={category} onChange={handleChange}>
+                            <option value="">Select an option</option>
+                        {   
+                            findCategory().map((category, idx) => {
+                                return <option key={idx} value={`${category}`}>{category}</option>
+                            })
+                        }
+                    </select>
                 </div>
-                <div className="form-group">
-                    <div className="col-sm-12">
-                        <label htmlFor="category">Sub Category: </label>
-                        <select name="subCategory" value={this.state.subCategory} onChange={this.handleChange}>
-                                <option value="">Select an option</option>
-                            {
-                                this.state.category 
-                                ? this.findSubCategory().map((subCategory, idx) => {
-                                    return <option key={idx} value={`${subCategory}`}>{subCategory}</option>
-                                })
-                                : ''
-                            }
-                        </select>
-                    </div>
-
-                </div>
-                <div className="form-group">
-                    <div className="col-sm-12">
-                    <label htmlFor="serviceDescription">Service Description: </label>
-                    <input type="text" className="form-control" placeholder="Enter Service Description" value={this.state.serviceDescription} name="serviceDescription" onChange={this.handleChange} />
-                    </div>
-                </div>
-                <div className="form-group">
-                    <div className="col-sm-12">
-                    <label htmlFor="labourCharge">Labour Charge ($/hr): </label>
-                    <input type="text" className="form-control" placeholder="Enter Labour Charge" value={this.state.labourCharge} name="labourCharge" onChange={this.handleChange} />
-                    </div>
-                </div>
-                <div className="form-group">
-                    <div className="col-sm-12">
-                    <label htmlFor="serviceTime">Service Time (Hours): </label>
-                    <input type="text" className="form-control" placeholder="Enter Service Time(Hours)" value={this.state.serviceTime} name="serviceTime" onChange={this.handleChange} />
-                    </div>
-                </div>
-                 <div className="form-group">
-                    <div className="col-sm-12 text-center">
-                    <button className="btn btn-default" disabled={this.isFormInvalid()}>Add Service</button>&nbsp;&nbsp;
-                    <Link to='/'>Cancel</Link>
-                    </div>
-                </div>
-                </form>
             </div>
-        );
-    }
+            <div className="form-group">
+                <div className="col-sm-12">
+                    <label htmlFor="category">Sub Category: </label>
+                    <select name="subCategory" value={subCategory} onChange={handleChange}>
+                            <option value="">Select an option</option>
+                        {
+                            category 
+                            ? findSubCategory().map((subCategory, idx) => {
+                                return <option key={idx} value={`${subCategory}`}>{subCategory}</option>
+                            })
+                            : ''
+                        }
+                    </select>
+                </div>
+
+            </div>
+            <div className="form-group">
+                <div className="col-sm-12">
+                <label htmlFor="serviceDescription">Service Description: </label>
+                <input type="text" className="form-control" placeholder="Enter Service Description" value={serviceDescription} name="serviceDescription" onChange={handleChange} />
+                </div>
+            </div>
+            <div className="form-group">
+                <div className="col-sm-12">
+                <label htmlFor="labourCharge">Labour Charge ($/hr): </label>
+                <input type="text" className="form-control" placeholder="Enter Labour Charge" value={labourCharge} name="labourCharge" onChange={handleChange} />
+                </div>
+            </div>
+            <div className="form-group">
+                <div className="col-sm-12">
+                <label htmlFor="serviceTime">Service Time (Hours): </label>
+                <input type="text" className="form-control" placeholder="Enter Service Time(Hours)" value={serviceTime} name="serviceTime" onChange={handleChange} />
+                </div>
+            </div>
+                <div className="form-group">
+                <div className="col-sm-12 text-center">
+                <button className="btn btn-default" disabled={isFormInvalid()}>Add Service</button>&nbsp;&nbsp;
+                <Link to='/Home'>Cancel</Link>
+                </div>
+            </div>
+            </form>
+        </div>
+    );
 }
 
 

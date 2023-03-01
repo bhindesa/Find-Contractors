@@ -13,6 +13,7 @@ function ContractorDetails(props){
     const [customer, setCustomer] = useState();
     const [review, setReview] = useState();
     const [stars, setStars] = useState();
+    const [averageStarsRatingForContractor, setAverageStarsRatingForContractor] = useState();
     const [services, setServices] = useState();
     const [starsContractorAverage, setStarsContractorAverage] = useState();
     const [starsContractorServiceList, setStarsContractorServiceList] = useState();
@@ -32,14 +33,29 @@ function ContractorDetails(props){
             }
             console.log(contractorId);
             const contractorDataFromAPI = await  contractorService.getOneContractor(contractorId);
+            const averageRating = findAverageStarRatingForContractor(contractorDataFromAPI.stars);
+            console.log(averageRating)
+            setAverageStarsRatingForContractor(averageRating);
+            setServices(contractorDataFromAPI.services)
+            setStarsContractorRiviewList(contractorDataFromAPI.stars)
+            setContractorSearched(contractorDataFromAPI);
+
             console.log(contractorDataFromAPI)
-            setServices(contractorDataFromAPI[0].services)
-            setStarsContractorRiviewList(contractorDataFromAPI[0].stars)
-            setContractorSearched(contractorDataFromAPI[0]);
         }
         fetchData();  
     },[submitClicked] );
 
+    function findAverageStarRatingForContractor(starsList){
+        if(starsList.length > 0){
+            const sumOfStarRating = starsList.reduce((prev, cur) => {
+                return prev + cur;
+            });
+            const avarageStarRatingForService = sumOfStarRating / starsList.length;
+            return avarageStarRatingForService;
+        }
+        
+    }
+     
     async function handleSubmit(e){
         e.preventDefault();
         console.log(contractorId);
@@ -58,6 +74,7 @@ function ContractorDetails(props){
         return !(
             review
             && stars
+            && customer
             );
     }
 
@@ -115,19 +132,19 @@ function ContractorDetails(props){
         const listOfContractorReviews = [];
         if(contractorSearched.reviews){
             for (let index = 0; index < contractorSearched.reviews.length; index++) {
-                const reviewsListObject = {
-                    firstname : contractorSearched.customer_ids[index].firstname,
-                    lasttname : contractorSearched.customer_ids[index].lastname,
-                    reviews: contractorSearched.reviews[index],
-                    stars: contractorSearched.stars[index]
-                };
+                // const reviewsListObject = {
+                //     firstname : contractorSearched.customer_ids[index].firstname,
+                //     lasttname : contractorSearched.customer_ids[index].lastname,
+                //     reviews: contractorSearched.reviews[index],
+                //     stars: contractorSearched.stars[index]
+                // };
                 listOfContractorReviews.push((<div key={index} className={styles.reviewList}>
-                    <p> {reviewsListObject.firstname} {reviewsListObject.lasttname} </p>
+                    <p> {contractorSearched.customer_ids[index].firstname} {contractorSearched.customer_ids[index].lastname} </p>
                     <p>
                         {   
-                            stars 
+                            contractorSearched.stars[index] 
                             ?
-                            getStarsBasedOnRating(stars).map((star, idx) => {
+                            getStarsBasedOnRating(contractorSearched.stars[index]).map((star, idx) => {
                                 return (
                                     <div className={styles.imgContainer} key={idx}> {star} </div>
                                 )
@@ -135,7 +152,7 @@ function ContractorDetails(props){
                             : 'Stars not available'
                         }
                     </p>
-                    <p> {reviewsListObject.reviews} </p>
+                    <p> {contractorSearched.reviews[index]} </p>
                 </div>));
                 
             }
@@ -173,27 +190,37 @@ function ContractorDetails(props){
                     ?     
                     <div className={styles.contractorDetailsContainer}>
                         <p>{contractorSearched.companyName} - {contractorSearched.companyLicenseNumber}</p>
-                        <p>{contractorSearched.firstname}{contractorSearched.lastname}</p>
+                        <p>{contractorSearched.firstname} {contractorSearched.lastname}</p>
                         <p>{contractorSearched.companyRegisterYear}</p>
                         <p>
                             {   
-                                stars 
+                                averageStarsRatingForContractor
                                 ?
-                                getStarsBasedOnRating(stars).map((star, idx) => {
+                                getStarsBasedOnRating(averageStarsRatingForContractor).map((star, idx) => {
                                     return (
                                     <div className={styles.imgContainer} key={idx}> {star} </div>)
                                 })
                                 : 'Stars not available'
                             }
                         </p>
-                        <p>{contractorSearched.companyRegisterYear}</p>
-                        <p>{contractorSearched.serviceDescription}</p>
+                        {/* <p>{contractorSearched.companyRegisterYear}</p> */}
+                        {/* <p>{contractorSearched.serviceDescription}</p> */}
                     </div>
                     : 'Data not fetched'
+                }
 
+                {
+                    customer 
+                    ? 
+                    ''
+                    :  
+                    <div className={styles.serviceUpdateContainer} >
+                        <Link to={`/contractors/${contractorId}/update`} replace><button>Update Contractor</button></Link>
+                    </div>
+                
                 }
                 <hr />
-                <h1><i>Services List</i>:</h1>  
+                {/* <h1><i>Services List</i>:</h1>  
                 {
                     contractorSearched
                     ? 
@@ -206,7 +233,7 @@ function ContractorDetails(props){
                     </div>
                         
                     
-                }
+                } */}
 
             
                 <h1><i>Reviews</i>:</h1>   
@@ -227,7 +254,7 @@ function ContractorDetails(props){
                                     getRatingOptions() 
                                     ?
                                     getRatingOptions().map((numberOfStar, idx) => {
-                                        console.log(numberOfStar[`${idx + 1}`])
+                                        // console.log(numberOfStar[`${idx + 1}`])
                                         return (
                                             <option key={idx} value={`${idx + 1}`}> {`${idx + 1}`} </option>)
                                     })

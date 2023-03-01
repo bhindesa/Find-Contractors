@@ -65,8 +65,8 @@ async function login(creds) {
 
 
 async function getOneContractor(contractor_id){
-  console.log(contractor_id)
-  console.log('Getting one Contractors - In (contractorService)\n');
+  // console.log(contractor_id)
+  // console.log('Getting one Contractors - In (contractorService)\n');
   try {
       const response = await fetch(BASE_URL + `${contractor_id}`, {
           method: 'GET',
@@ -77,7 +77,7 @@ async function getOneContractor(contractor_id){
       if(response.ok){
           const searchedOneContractor = await response.json(); 
           console.log(searchedOneContractor)
-          return searchedOneContractor;
+          return searchedOneContractor[0];
       }
       else{
           console.log('Couldn\'t fetch one contractor');
@@ -101,9 +101,9 @@ async function addReview(contractorReviewData){
                     
       console.log(response)
       if(response.ok){
-          const updatedContractorData = await response.json(); 
-          console.log(updatedContractorData)
-          return updatedContractorData;
+          const updatedContractorReviewsData = await response.json(); 
+          console.log(updatedContractorReviewsData)
+          return updatedContractorReviewsData;
       }
       else{
           console.log('Couldn\'t add contractor reviews');
@@ -116,11 +116,61 @@ async function addReview(contractorReviewData){
 
 }
 
+async function updateContractor(updatedContractorData){
+  console.log(JSON.stringify(updatedContractorData))
+  try {
+      const response = await fetch(BASE_URL + 'updateContractor', {
+          method: 'PUT',
+          headers: new Headers({'Content-Type': 'application/json'}),
+          body: JSON.stringify(updatedContractorData)
+      });
+                    
+      console.log(response)
+      if(response.ok){
+          const updatedContractor = await response.json(); 
+          return updatedContractor;
+      }
+      else{
+          console.log('Contractor Data not updated');
+          return null;
+      }
+  } 
+  catch (error) {
+     throw new Error('Error while updating Data');
+  }
+}
+
+async function deleteContractor(deletingContractorData){
+  console.log(JSON.stringify(deletingContractorData))
+  try {
+      const response = await fetch(BASE_URL + 'deleteContractor', {
+          method: 'DELETE',
+          headers: new Headers({'Content-Type': 'application/json'}),
+          body: JSON.stringify(deletingContractorData)
+      });
+                    
+      console.log(response)
+      if(response.ok){
+          const deletedContractor = await response.json(); 
+          return deletedContractor;
+      }
+      else{
+          console.log('Data not updated');
+          return null;
+      }
+  } 
+  catch (error) {
+     throw new Error('Error while updating Data');
+  }
+}
+
 export default {
   signupContractor, 
   getUser,
   logout,
   login,
+  addReview,
   getOneContractor,
-  addReview
+  updateContractor,
+  deleteContractor
 }
