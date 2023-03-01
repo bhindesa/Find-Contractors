@@ -28,17 +28,15 @@ Upon starting the application, they will be in the login page of the site a user
 
 ## App Images
 
-Login Page : ![My Image]()
-
 
 Sign-Up page:
-![My Image]('/public/images/Signup Page Customers and Contractors.png')
+![My Image](https://i.imgur.com/FLsIbwh.png)
 
 Login page:
-![My Image]('public/images/Login Page.png')
+![My Login Page](https://i.imgur.com/2CLvTH5.png)
 
 Add Service page:
-![My Image](https://imgur.com/a/MkiWA5x)
+![My Image](https://i.imgur.com/yQkU1JJ.png)
 
 
 Contractor Details:
@@ -53,10 +51,10 @@ Service details page:
 ![My Image]('public/images/Service Detail Page.png')
 
 Contractor services list page:
-![My Image]('public/images/Contractors screen of services.png')
+![My Image](https://i.imgur.com/FE4tyQH.png)
 
 Customer services list page:
-![My Image]('public/images/Customer List of Services.png')
+![My Image](https://i.imgur.com/W69M7yK.png)
 
 
 ## Getting Started
