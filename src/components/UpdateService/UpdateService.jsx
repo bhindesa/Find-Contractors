@@ -171,7 +171,7 @@ export default function UpdateService(){
 
     return (
             <div>
-                <h1>Update Service</h1>
+                <h1>Update Service Details</h1>
                 <form className="form-horizontal" onSubmit={handleUpdate} >
                     <div className="form-group">
                         <div className="col-sm-12">

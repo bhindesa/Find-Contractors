@@ -30,31 +30,36 @@ Upon starting the application, they will be in the login page of the site a user
 
 
 Sign-Up page:
-![My Image](https://i.imgur.com/FLsIbwh.png)
+![Sign-Up page](https://i.imgur.com/FLsIbwh.png)
 
 Login page:
-![My Login Page](https://i.imgur.com/2CLvTH5.png)
+![Login page](https://i.imgur.com/2CLvTH5.png)
 
 Add Service page:
-![My Image](https://i.imgur.com/yQkU1JJ.png)
+![Add Service page](https://i.imgur.com/yQkU1JJ.png)
 
 
 Contractor Details:
-![My Image]('/Contractors Detail Page.png')
+![Contractor Details](https://i.imgur.com/2Px2zyj.png)
 
 
-Update service details page:
-![My Image]('public/images/Update Page.png')
+Update contractor details page:
+![Update contractor details page](https://i.imgur.com/yNfFfoA.png)
 
 
 Service details page:
-![My Image]('public/images/Service Detail Page.png')
+![Service details page](https://i.imgur.com/MR7Jmbh.png)
+
+
+Update service details page:
+![Update service details page](https://i.imgur.com/MR7Jmbh.png)
+
 
 Contractor services list page:
-![My Image](https://i.imgur.com/FE4tyQH.png)
+![Contractor services list page](https://i.imgur.com/FE4tyQH.png)
 
 Customer services list page:
-![My Image](https://i.imgur.com/W69M7yK.png)
+![Customer services list page](https://i.imgur.com/W69M7yK.png)
 
 
 ## Getting Started
@@ -72,3 +77,10 @@ WIREFRAME:
 
 ## Icebox Features 
 While this application accomplishes some user-functionality, there are a number of icebox features which will be added as availability permits. Here are some of the future upgrades...
+- Add functionality for customer to book appointments with contractors. 
+- Add search and filter capability to find contractor by name, ratings and service type eg. Main categories(Plumber, Electrician, etc) or sub categories(Drywall installation, Painting, and etc).
+- Add "pop-up" verification when deleting a service or contractor account (just to double check)
+- Add printable report feature to print appointment details
+- Allow contractors to upload a picture of thier company.
+- Allow contractors to upload a pictures of thier services.
+- Add push notification or email confirmation for booking details and schedules. 
