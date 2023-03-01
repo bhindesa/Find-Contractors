@@ -15,6 +15,7 @@ function ServiceDetails(props){
     const [customer, setCustomer] = useState();
     const [review, setReview] = useState();
     const [stars, setStars] = useState();
+    const [averageStarsRating, setAverageStarsRating] = useState();
     const [starIcon, setStarIcon] = useState(starIconLink);
     const [submitClicked, setSubmitClicked] = useState(0);
 
@@ -27,13 +28,23 @@ function ServiceDetails(props){
                 // setContractor(currentLoggedInUser.customerData)
                 console.log('YOU ARE NOT ALLOWED TO ADD REVIEWS TO SERVICES')
             }
-            console.log(serviceId);
             const data = await servicesService.getOneService(serviceId)
-            console.log(data[0])
-            setServiceSearched(data[0]);
+            const averageRating = findAverageStarRatingForService(data.stars);
+            console.log(averageRating)
+            setAverageStarsRating(averageRating);
+            setServiceSearched(data);
         }
         fetchData();  
     },[submitClicked]);
+
+    function findAverageStarRatingForService(starsList){
+        const sumOfStarRating = starsList.reduce((prev, cur) => {
+            return prev + cur;
+        });
+
+        const avarageStarRatingForService = sumOfStarRating / starsList.length;
+        return avarageStarRatingForService;
+    }
 
     async function handleSubmit(e){
         e.preventDefault();
@@ -76,30 +87,34 @@ function ServiceDetails(props){
 
     function generateReviewList(){
         const listOfReview = [];
-        if(serviceSearched){
+        if(serviceSearched.reviews.length > 0){
             for (let index = 0; index < serviceSearched.reviews.length; index++) {
-                const reviewsListObject = {
-                    firstname : serviceSearched.customer_ids[index].firstname,
-                    lasttname : serviceSearched.customer_ids[index].lastname,
-                    review: serviceSearched.reviews[index],
-                    stars: serviceSearched.stars[index]
-                };
-                listOfReview.push((<div key={index} className={styles.reviewList}>
-                    <p> {reviewsListObject.firstname} - {reviewsListObject.lasttname} </p>
-                    <p>
-                        {   
-                            stars 
-                            ?
-                            getStarsBasedOnRating(stars).map((star, idx) => {
-                                return (
-                                    <div className={styles.imgContainer} key={idx}> {star} </div>
-                                )
-                            })
-                            : 'Stars not available'
-                        }
-                    </p>
-                    <p> {reviewsListObject.review} </p>
-                </div>));
+                // const reviewsListObject = {
+                //     firstname : serviceSearched.customer_ids[index].firstname,
+                //     lasttname : serviceSearched.customer_ids[index].lastname,
+                //     review: serviceSearched.reviews[index],
+                //     stars: serviceSearched.stars[index]
+                // };
+                listOfReview.push(
+                    (
+                        <div key={index} className={styles.reviewList}>
+                            <p> {serviceSearched.customer_ids[index].firstname} - {serviceSearched.customer_ids[index].lastname} </p>
+                            <p>
+                                {   
+                                    serviceSearched.stars[index]
+                                    ?
+                                    getStarsBasedOnRating(serviceSearched.stars[index]).map((star, idx) => {
+                                        return (
+                                            <div className={styles.imgContainer} key={idx}> {star} </div>
+                                        )
+                                    })
+                                    : 'Stars not available'
+                                }
+                            </p>
+                            <p> {serviceSearched.reviews[index]} </p>
+                        </div>
+                     )
+                );
                 
             }
         }
@@ -139,13 +154,13 @@ function ServiceDetails(props){
                         <p>{serviceSearched.companyName}</p>
                         <p>
                             {   
-                                stars 
+                                averageStarsRating 
                                 ?
-                                getStarsBasedOnRating(stars).map((star, idx) => {
+                                getStarsBasedOnRating(averageStarsRating).map((star, idx) => {
                                     return (
                                     <div className={styles.imgContainer} key={idx}> {star} </div>)
                                 })
-                                : 'Stars not available'
+                                : 'Rating not available'
                             }
                         </p>
                         <p>{serviceSearched.companyRegisterYear}</p>
@@ -158,10 +173,17 @@ function ServiceDetails(props){
 
 
                 }
-
-                <div className={styles.serviceUpdateContainer} onSubmit={handleSubmit} >
-                    <Link to={`/services/${serviceId}/update`} replace><button>Update Service</button></Link>
-                </div>
+                {
+                    customer 
+                    ? 
+                    ''
+                    :  
+                    <div className={styles.serviceUpdateContainer}>
+                        <Link to={`/services/${serviceId}/update`} replace><button>Update Service</button></Link>
+                    </div>
+                
+                }
+                
                 {/* <form className={styles.serviceReviewsContainer} onSubmit={handleSubmit} >
                     <div className="form-group">
                             <div className="col-sm-12 text-center">
@@ -228,7 +250,7 @@ function ServiceDetails(props){
                     </div>
                     : 
                     <div className={styles.reviewListContainer}>
-                       "No Reviews Available"
+                       No Reviews Available
                     </div>
                         
                     

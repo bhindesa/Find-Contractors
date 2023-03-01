@@ -13,6 +13,7 @@ import AddService from './components/AddService/AddService';
 import ServiceDetails from './components/ServiceDetails/ServiceDetails';
 import ContractorDetails from './components/ContractorDetails/ContractorDetails';
 import UpdateService from './components/UpdateService/UpdateService';
+import UpdateContractor from './components/UpdateContractor/UpdateContractor';
 class App extends React.Component {
   constructor(props){
     super(props)
@@ -126,7 +127,7 @@ class App extends React.Component {
               <Home 
                 checkWhoLoggedIn = {this.checkWhoLoggedIn}
               />
-              <Outlet />,
+              <Outlet />
             </>
             : 
             <Navigate to='/Login' replace/>
@@ -162,7 +163,7 @@ class App extends React.Component {
           element: (
             this.state.customerUser || this.state.contractorUser
             ? 
-            <Navigate to='/Home' />
+            <Navigate to='/Home' replace/>
             :
             <>
               <LoginPage 
@@ -216,9 +217,22 @@ class App extends React.Component {
         {
           path: `/services/:serviceId/update`,
           element: (
-            this.state.customerUser || this.state.contractorUser
+            this.state.contractorUser
             ?
             <UpdateService 
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+            />
+            :
+            <Navigate to='/Login' replace/>
+          )
+        },
+        {
+          path: `/contractors/:contractorId/update`,
+          element: (
+            this.state.contractorUser
+            ?
+            <UpdateContractor 
+              handleLogout = {this.handleLogout} 
               checkWhoLoggedIn = {this.checkWhoLoggedIn}
             />
             :

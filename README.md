@@ -4,7 +4,7 @@
 This application is a event planning app that people can use for scheduling for their upcoming events and appointments. This CRUD application was developed using RESTful architecture principles and MERN stack technologies (MongoDB, ExpressJS. React v6.0, & Node.js)
 
 ## Application Details 
-Upon starting the application, they will be in the login page of the site a user can login costumer and a contractor can login then the contractor can add service.if the contrcator doesnt have an account they will redirected to the signup page.and a user can add a reveiw on service or on contractor.
+Upon starting the application, they will be in the login page of the site a user can login costumer and a contractor can login then the contractor can add service. If the contrcator doesnt have an account they will redirected to the signup page.and a user can add a reveiw on service or on contractor.
 
 
 
@@ -38,11 +38,11 @@ Login page:
 ![My Image]('public/images/Login Page.png')
 
 Add Service page:
-![My Image]('public/images/Add Services page for Contractors.png')
+![My Image](https://imgur.com/a/MkiWA5x)
 
 
 Contractor Details:
-![My Image]('public/images/Contractors Detail Page.png')
+![My Image]('/Contractors Detail Page.png')
 
 
 Update service details page:

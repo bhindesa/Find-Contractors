@@ -1,4 +1,5 @@
 const Contractor = require('../models/contractor');
+const Service = require('../models/service');
 const jwt = require('jsonwebtoken');
 
 const SECRET = process.env.SECRET;
@@ -28,7 +29,6 @@ async function signup(req, res) {
 
 
 async function login(req, res){
-    // console.log(req.body);
 
     try {
         const contractor = await Contractor.findOne({email : req.body.email});
@@ -60,10 +60,10 @@ async function getOneContractor(req, res){
       .populate(['services','customer_ids'])
       .exec(function(err, contractorSearched){
           if(contractorSearched){
-              res.json(contractorSearched);
+              res.status(200).json(contractorSearched);
           }
           else{
-              res.json(null).status(401);
+              res.status(401).json(null);
           }
       });
   }
@@ -72,8 +72,8 @@ async function getOneContractor(req, res){
   }
 }
 
-async function updateContractor(req, res){
-  console.log('Backend Update FUnc Contractor \n')
+async function addContractorReview(req, res){
+  // console.log('Backend Update FUnc Contractor \n')
   console.log(req.body)
   // const updatingService = await Service.findById(req.body.service_id);
   try {
@@ -93,7 +93,7 @@ async function updateContractor(req, res){
               res.json(constractorSearched);
           }
           else{
-              res.json(null).status(401);
+              res.status(401).json(null);
           }
       });
   }
@@ -102,9 +102,71 @@ async function updateContractor(req, res){
   }
 }
 
+async function updateContractor(req, res){
+  console.log(req.body)
+  console.log('Backend Update FUnc')
+  try {
+
+      Contractor.findOneAndUpdate(
+          { _id: req.body.contractor_Id }, 
+          { $set: {
+              email: req.body.email,
+              firstname: req.body.firstname,
+              lastname: req.body.lastname,
+              dob: req.body.dob,
+              address: req.body.address,
+              phone: req.body.phone,
+              companyName: req.body.companyName,
+              companyLicenseNumber: req.body.companyLicenseNumber,
+              companyRegisterYear: req.body.companyRegisterYear
+              }
+          },  // update object
+          { new: true }  // this will make sure new updated document is sent back
+      ).populate(['customer_ids', 'contractor_id'])
+      .exec((err, updatedContractor) => {
+          if (err) {
+              console.error(err);
+          } else {
+              if(updatedContractor){
+                  res.json(updatedContractor);
+              }
+              else{
+                  res.status(401).json(null);
+              }
+          }
+      });
+  }
+  catch (err) {
+    res.status(400).json(err);
+  }
+}
+
+async function deleteContractor(req, res){
+  console.log(req.body.contractor_Id)
+
+  try {
+      await Service.deleteMany({ contractor_id : req.body.contractor_Id });
+      const deletedContractor = await Contractor.findOneAndDelete({ _id: req.body.contractor_Id });
+      if(deletedContractor) {
+        console.log("Successfully deleted contractor and related services");
+        console.log(deletedContractor);
+        return res.status(200).json(deletedContractor);
+      }
+      else{
+        res.status(404).json({err : "Could not find Contractor"});
+      }
+  }
+  catch (err) {
+    res.status(400).json(err);
+  }
+}
+
+
 module.exports = {
     signup,
     login,
     getOneContractor,
-    updateContractor
+    addContractorReview,
+    updateContractor,
+    deleteContractor
 }
