@@ -38,12 +38,13 @@ function ServiceDetails(props){
     },[submitClicked]);
 
     function findAverageStarRatingForService(starsList){
-        const sumOfStarRating = starsList.reduce((prev, cur) => {
-            return prev + cur;
-        });
-
-        const avarageStarRatingForService = sumOfStarRating / starsList.length;
-        return avarageStarRatingForService;
+        if(starsList.length > 0){
+            const sumOfStarRating = starsList.reduce((prev, cur) => {
+                return prev + cur;
+            });
+            const avarageStarRatingForService = sumOfStarRating / starsList.length;
+            return avarageStarRatingForService;
+        }
     }
 
     async function handleSubmit(e){
@@ -152,7 +153,7 @@ function ServiceDetails(props){
                     <div >
                         <p>{serviceSearched.subCategory} - {serviceSearched.category}</p>
                         <p>{serviceSearched.companyName}</p>
-                        <p>
+                        <div>
                             {   
                                 averageStarsRating 
                                 ?
@@ -162,7 +163,7 @@ function ServiceDetails(props){
                                 })
                                 : 'Rating not available'
                             }
-                        </p>
+                        </div>
                         <p>{serviceSearched.companyRegisterYear}</p>
                         <p>{serviceSearched.serviceDescription}</p>
                     </div>

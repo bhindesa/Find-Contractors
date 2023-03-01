@@ -14,6 +14,7 @@ import ServiceDetails from './components/ServiceDetails/ServiceDetails';
 import ContractorDetails from './components/ContractorDetails/ContractorDetails';
 import UpdateService from './components/UpdateService/UpdateService';
 import UpdateContractor from './components/UpdateContractor/UpdateContractor';
+import RedirectToHome from './components/RedirectToHome/RedirectToHome';
 class App extends React.Component {
   constructor(props){
     super(props)
@@ -119,22 +120,27 @@ class App extends React.Component {
   getChildRoutes(){
     const childernRoutes =[
         {
-          path: `/Home`,
-          element: (
-            this.state.customerUser || this.state.contractorUser
-            ? 
-            <>
-              <Home 
-                checkWhoLoggedIn = {this.checkWhoLoggedIn}
-              />
-              <Outlet />
-            </>
-            : 
-            <Navigate to='/Login' replace/>
-          )
+          // path: `/Home`,
+          // element: (
+          //   this.state.customerUser || this.state.contractorUser
+          //   ? 
+          //   <>
+          //     <Home 
+          //       checkWhoLoggedIn = {this.checkWhoLoggedIn}
+          //     />
+          //     <Navbar 
+          //           navLinks={this.getLinks()}
+          //           loggedInCustomerFirstname={ customerService.getUser() ? customerService.getUser().firstname : null }
+          //           loggedInContractorFirstname={ contractorService.getUser() ? contractorService.getUser().firstname : null }
+          //     />
+          //     <Outlet />
+          //   </>
+          //   : 
+          //   <Navigate to='/Login' replace/>
+          // )
         },
         {
-          path: `/Add Service`,
+          path: `Add Service`,
           element: (
             this.state.customerUser || this.state.contractorUser
             ?
@@ -144,6 +150,147 @@ class App extends React.Component {
             :
             <Navigate to='/Login' replace/>
           )
+        },
+        // {
+        //   path: `/Sign Up`,
+        //   element: (
+        //     this.state.customerUser || this.state.contractorUser
+        //     ?
+        //     <Navigate to='/Home' replace/>
+        //     : 
+        //     <SignupPage 
+        //       handleLoginOrSignup={this.handleLoginOrSignup}
+        //       checkWhoLoggedIn = {this.checkWhoLoggedIn}
+        //     />
+        //   )
+        // },
+        // {
+        //   path: `/Login`,
+        //   element: (
+        //     this.state.customerUser || this.state.contractorUser
+        //     ? 
+        //     <Navigate to='/Home' replace/>
+        //     :
+        //     <>
+        //       <LoginPage 
+        //         handleLoginOrSignup={this.handleLoginOrSignup}
+        //         checkWhoLoggedIn = {this.checkWhoLoggedIn}
+        //       />
+        //     </>
+           
+        //   )
+        // },
+        // {
+        //   path: `/Logout`,
+        //   element: (
+        //     this.state.customerUser || this.state.contractorUser
+        //     ?
+        //     <LogoutPage 
+        //       handleLogout = {this.handleLogout} 
+        //       checkWhoLoggedIn = {this.checkWhoLoggedIn}
+        //     />
+        //     :
+        //     <>
+        //       <Navigate to='/Home'  replace/>
+        //     </>
+            
+        //   )
+        // },
+        {
+          path: `services/:serviceId`,
+          element: (
+            this.state.customerUser || this.state.contractorUser
+            ?
+            <ServiceDetails 
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+            />
+            :
+            <Navigate to='/Login' replace/>
+          )
+        },
+        {
+          path: `contractors/:contractorId`,
+          element: (
+            this.state.customerUser || this.state.contractorUser
+            ?
+            <ContractorDetails 
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+            />
+            :
+            <Navigate to='/Login' replace/>
+          )
+        },
+        {
+          path: `services/:serviceId/update`,
+          element: (
+            this.state.contractorUser
+            ?
+            <UpdateService 
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+            />
+            :
+            <Navigate to='/Login' replace/>
+          )
+        },
+        {
+          path: `contractors/:contractorId/update`,
+          element: (
+            this.state.contractorUser
+            ?
+            <UpdateContractor 
+              handleLogout = {this.handleLogout} 
+              checkWhoLoggedIn = {this.checkWhoLoggedIn}
+            />
+            :
+            <Navigate to='/Login' replace/>
+          )
+        }
+    ];
+    return childernRoutes;
+  }
+
+
+
+  getBaseRoute(){
+    const baseRouter = createBrowserRouter(
+      [
+        {
+          path: '/',
+          element: <RedirectToHome />
+          
+          // (
+          //       <>
+                  
+          //         {/* <Navbar 
+          //           navLinks={this.getLinks()}
+          //           loggedInCustomerFirstname={ customerService.getUser() ? customerService.getUser().firstname : null }
+          //           loggedInContractorFirstname={ contractorService.getUser() ? contractorService.getUser().firstname : null }/>
+          //         <Outlet /> */}
+          //       </>
+          //   )
+          
+        },
+        {
+          path: `/Home`,
+          element: (
+            this.state.customerUser || this.state.contractorUser
+            ? 
+            <>
+             <Navbar 
+                    navLinks={this.getLinks()}
+                    loggedInCustomerFirstname={ customerService.getUser() ? customerService.getUser().firstname : null }
+                    loggedInContractorFirstname={ contractorService.getUser() ? contractorService.getUser().firstname : null }
+              />
+              <Home 
+                checkWhoLoggedIn = {this.checkWhoLoggedIn}
+              />
+             
+              <Outlet />
+            </>
+            : 
+            <Navigate to='/Login' replace/>
+          ),
+          children: this.getChildRoutes()
         },
         {
           path: `/Sign Up`,
@@ -189,77 +336,6 @@ class App extends React.Component {
             </>
             
           )
-        },
-        {
-          path: `/services/:serviceId`,
-          element: (
-            this.state.customerUser || this.state.contractorUser
-            ?
-            <ServiceDetails 
-              checkWhoLoggedIn = {this.checkWhoLoggedIn}
-            />
-            :
-            <Navigate to='/Login' replace/>
-          )
-        },
-        {
-          path: `/contractors/:contractorId`,
-          element: (
-            this.state.customerUser || this.state.contractorUser
-            ?
-            <ContractorDetails 
-              checkWhoLoggedIn = {this.checkWhoLoggedIn}
-            />
-            :
-            <Navigate to='/Login' replace/>
-          )
-        },
-        {
-          path: `/services/:serviceId/update`,
-          element: (
-            this.state.contractorUser
-            ?
-            <UpdateService 
-              checkWhoLoggedIn = {this.checkWhoLoggedIn}
-            />
-            :
-            <Navigate to='/Login' replace/>
-          )
-        },
-        {
-          path: `/contractors/:contractorId/update`,
-          element: (
-            this.state.contractorUser
-            ?
-            <UpdateContractor 
-              handleLogout = {this.handleLogout} 
-              checkWhoLoggedIn = {this.checkWhoLoggedIn}
-            />
-            :
-            <Navigate to='/Login' replace/>
-          )
-        }
-    ];
-    return childernRoutes;
-  }
-
-
-
-  getBaseRoute(){
-    const baseRouter = createBrowserRouter(
-      [
-        {
-          path: '/',
-          element: (
-                <>
-                  <Navbar 
-                    navLinks={this.getLinks()}
-                    loggedInCustomerFirstname={ customerService.getUser() ? customerService.getUser().firstname : null }
-                    loggedInContractorFirstname={ contractorService.getUser() ? contractorService.getUser().firstname : null }/>
-                  <Outlet />
-                </>
-            ),
-          children: this.getChildRoutes()
         }
       ]
     );
